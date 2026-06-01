@@ -18,6 +18,7 @@ SUPPORTED_URL_HOSTS = (
     "www.soundcloud.com",
     "on.soundcloud.com",
 )
+SUPPORTED_AUDIO_EXTENSIONS = {".mp3", ".wav", ".flac", ".m4a"}
 
 
 @dataclass
@@ -40,6 +41,21 @@ def resolve_audio_source(source: str | Path, download_dir: str | Path | None = N
 
     path = Path(source)
     return ResolvedAudioSource(original=source_text, local_path=path, source_type="file")
+
+
+def collect_audio_files(directory: str | Path, recursive: bool = False) -> list[Path]:
+    """Return supported audio files in a directory with stable ordering."""
+
+    root = Path(directory)
+    if not root.is_dir():
+        raise NotADirectoryError(f"Not a directory: {root}")
+
+    candidates = root.rglob("*") if recursive else root.iterdir()
+    return sorted(
+        path
+        for path in candidates
+        if path.is_file() and path.suffix.lower() in SUPPORTED_AUDIO_EXTENSIONS
+    )
 
 
 def is_supported_url(value: str) -> bool:

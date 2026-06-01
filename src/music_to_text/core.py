@@ -10,7 +10,7 @@ from music_to_text.heuristics import build_heuristic_tags, generate_local_text
 from music_to_text.llm import LLMConfig, OpenAICompatibleClient
 from music_to_text.prompts import build_prompt
 from music_to_text.schemas import AnalysisResult, GeneratedText, OutputMode
-from music_to_text.sources import resolve_audio_source
+from music_to_text.sources import collect_audio_files, resolve_audio_source
 
 
 class MusicToText:
@@ -86,6 +86,18 @@ class MusicToText:
             )
         finally:
             resolved_source.cleanup()
+
+    def analyze_many(
+        self,
+        directory: str | Path,
+        mode: OutputMode = "summary",
+        no_llm: bool = False,
+        recursive: bool = False,
+    ) -> list[AnalysisResult]:
+        """Analyze all supported audio files in a local directory."""
+
+        files = collect_audio_files(directory, recursive=recursive)
+        return [self.analyze(path, mode=mode, no_llm=no_llm) for path in files]
 
 
 def _list_or_default(value: object, default: list[str]) -> list[str]:

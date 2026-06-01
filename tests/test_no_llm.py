@@ -72,3 +72,38 @@ def test_url_analysis_uses_resolved_download_without_network(monkeypatch, tmp_pa
     assert result.source_path == "https://soundcloud.com/artist/track"
     assert result.extra["source_type"] == "url"
     assert result.extra["source_metadata"]["title"] == "Test track"
+
+
+def test_analyze_many_processes_supported_audio_files(monkeypatch, tmp_path) -> None:
+    first = tmp_path / "a.wav"
+    second = tmp_path / "b.mp3"
+    ignored = tmp_path / "notes.txt"
+    first.write_bytes(b"fake")
+    second.write_bytes(b"fake")
+    ignored.write_text("not audio", encoding="utf-8")
+
+    class FailingClient:
+        def complete_json(self, prompt: str) -> dict[str, object]:
+            raise AssertionError("LLM client should not be called")
+
+    def fake_analyze_audio(path: Path) -> AudioFeatures:
+        return AudioFeatures(
+            path=str(path),
+            duration_seconds=30.0,
+            sample_rate=44100,
+            tempo_bpm=110.0,
+            loudness_proxy_db=-18.0,
+            spectral_centroid_mean=2200.0,
+            chroma_mean=[0.1] * 12,
+            key_estimate="C major/minor estimate",
+            onset_strength_mean=1.0,
+            energy_profile=[1.0],
+            section_changes_seconds=[],
+        )
+
+    monkeypatch.setattr("music_to_text.core.analyze_audio", fake_analyze_audio)
+
+    analyzer = MusicToText(api_key=None, client=FailingClient())
+    results = analyzer.analyze_many(tmp_path, no_llm=True)
+
+    assert [Path(result.source_path).name for result in results] == ["a.wav", "b.mp3"]

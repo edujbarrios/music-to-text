@@ -8,13 +8,24 @@ Text-to-music models are reaching a peak. What about the reverse? Music-to-text 
 audio in -> musical analysis -> structured metadata -> LLM-generated descriptions
 ```
 
-![Music-to-text framework pipeline](assets/music-to-text-pipeline.svg)
+<p align="center">
+  <img src="assets/music-to-text-pipeline.svg" alt="Music-to-text framework pipeline" width="100%">
+</p>
 
-## Why music-to-text matters
+## What It Does
+
+- analyzes local audio files, YouTube links, and SoundCloud links
+- extracts tempo, loudness, chroma, key estimates, energy, and section-change hints
+- generates deterministic local descriptions with `--no-llm`
+- optionally calls any OpenAI-compatible chat completion API
+- returns structured JSON for catalogs, playlists, A&R notes, PR copy, and sync pitches
+- supports folder analysis for local music collections
+
+## Why Music-To-Text Matters
 
 Music catalogs, artists, labels, supervisors, and researchers need language that explains what a track is doing. Today, people still write most of that metadata manually: genre notes, mood tags, playlist pitches, A&R blurbs, and sync descriptions. This project makes that work more reproducible by combining deterministic audio analysis with optional OpenAI-compatible language models.
 
-## Installation
+## Quick Start
 
 This project is intended for local development from the cloned repository. It does not depend on a package existing on PyPI.
 
@@ -34,15 +45,39 @@ python -m venv .venv
 pip install -e .
 ```
 
-## CLI
+Run without an API key:
 
 ```bash
 music-to-text examples/song.mp3 --no-llm
+```
+
+Run with an OpenAI-compatible API:
+
+```bash
 music-to-text examples/song.mp3 --mode pr
+```
+
+## CLI
+
+Analyze one file:
+
+```bash
 music-to-text examples/song.mp3 --mode json --pretty
 music-to-text examples/song.mp3 --mode sync --output sync-pitch.json
+```
+
+Analyze a YouTube or SoundCloud link:
+
+```bash
 music-to-text "https://www.youtube.com/watch?v=VIDEO_ID" --no-llm
 music-to-text "https://soundcloud.com/artist/track" --mode playlist
+```
+
+Analyze a folder:
+
+```bash
+music-to-text examples/ --no-llm --mode json --pretty
+music-to-text examples/ --recursive --output catalog-analysis.json
 ```
 
 Options:
@@ -55,10 +90,13 @@ Options:
 - `--output`
 - `--pretty`
 - `--download-dir`
+- `--recursive`
 
-## YouTube and SoundCloud inputs
+## Inputs
 
-Local files are still the default workflow, but the CLI and Python API also accept YouTube and SoundCloud links. URL inputs are downloaded locally with `yt-dlp` before analysis.
+Local files are the default workflow. When the local environment supports decoding them, MP3, WAV, FLAC, and M4A files can be analyzed.
+
+YouTube and SoundCloud URLs are downloaded locally with `yt-dlp` before analysis:
 
 ```bash
 music-to-text "https://youtu.be/VIDEO_ID" --no-llm --pretty
@@ -67,6 +105,13 @@ music-to-text "https://www.youtube.com/watch?v=VIDEO_ID" --download-dir download
 ```
 
 By default, downloaded URL audio is stored in a temporary folder and removed after analysis. Use `--download-dir` to keep the downloaded file. Only analyze media you have the right to access and process, and follow the terms of the source platform.
+
+Folder analysis processes supported audio files in stable sorted order. Use `--recursive` to include nested folders:
+
+```bash
+music-to-text music-folder/ --no-llm --mode json --pretty
+music-to-text music-folder/ --recursive --output dataset.json
+```
 
 ## Python API
 
@@ -84,13 +129,19 @@ URLs work the same way:
 result = analyzer.analyze("https://soundcloud.com/artist/track", mode="playlist", no_llm=True)
 ```
 
+Folders can be analyzed with `analyze_many`:
+
+```python
+results = analyzer.analyze_many("music-folder", mode="summary", no_llm=True, recursive=True)
+```
+
 For local deterministic output without an API key:
 
 ```python
 result = analyzer.analyze("song.mp3", mode="summary", no_llm=True)
 ```
 
-## OpenAI-compatible API setup
+## OpenAI-Compatible API Setup
 
 Create an environment file:
 
@@ -114,9 +165,9 @@ You can also pass settings per command:
 music-to-text song.mp3 --base-url http://localhost:8000/v1 --model local-model --api-key local-key
 ```
 
-## Audio analysis
+## Audio Analysis
 
-When the local environment supports decoding them, MP3, WAV, FLAC, and M4A files can be analyzed. The framework extracts:
+The framework extracts:
 
 - duration
 - estimated tempo
@@ -167,7 +218,7 @@ Example JSON shape:
 }
 ```
 
-## No-LLM mode
+## No-LLM Mode
 
 Use `--no-llm` to return extracted features, heuristic tags, and deterministic local text without API calls:
 
@@ -182,7 +233,6 @@ Tests run without API keys.
 - Whisper transcription support
 - CLAP, MERT, and MuLan embeddings
 - similarity search
-- batch folder analysis
 - dataset export
 - web UI
 - plugin system for LLM providers
@@ -195,4 +245,3 @@ Contributions are welcome from the beginning. See [CONTRIBUTING.md](CONTRIBUTING
 ## License
 
 MIT License. See [LICENSE](LICENSE).
-
