@@ -91,5 +91,4 @@
     <text class="small" x="55" y="163" text-anchor="middle">sync</text>
   </g>
 
-  <text class="caption" x="80" y="370">Figure 1. The music-to-text pipeline converts audio into measurable features, normalizes them as metadata, and uses an optional OpenAI-compatible LLM layer to produce human-readable descriptions.</text>
 </svg>
