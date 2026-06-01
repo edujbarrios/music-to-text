@@ -1,4 +1,6 @@
 """Music-to-text analysis framework."""
 
-__author__ = "Eduardo J. Barrios"
+from music_to_text.core import MusicToText
 
+__author__ = "Eduardo J. Barrios"
+__all__ = ["MusicToText"]
