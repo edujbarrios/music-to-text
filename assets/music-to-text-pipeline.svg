@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="430" viewBox="0 0 1280 430" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="230" viewBox="0 0 1280 230" role="img" aria-labelledby="title desc">
   <title id="title">Music-to-text framework pipeline</title>
   <desc id="desc">A scientific paper style diagram showing audio input flowing through musical analysis and structured metadata into LLM-generated descriptions.</desc>
   <defs>
@@ -13,12 +13,9 @@
       .grid { stroke: #e5e7eb; stroke-width: 1; opacity: 0.75; }
       .panel { fill: #ffffff; stroke: #1f2937; stroke-width: 1.7; rx: 8; filter: url(#shadow); }
       .panel-accent { fill: #eef6ff; stroke: #1d4ed8; stroke-width: 1.5; rx: 8; }
-      .title { font: 700 26px Georgia, "Times New Roman", serif; fill: #111827; }
-      .subtitle { font: 400 15px Georgia, "Times New Roman", serif; fill: #4b5563; }
       .label { font: 700 19px Arial, Helvetica, sans-serif; fill: #111827; }
       .mono { font: 500 14px "Courier New", monospace; fill: #374151; }
       .small { font: 400 13px Arial, Helvetica, sans-serif; fill: #4b5563; }
-      .caption { font: 400 13px Georgia, "Times New Roman", serif; fill: #374151; }
       .arrow { stroke: #1f2937; stroke-width: 2.2; marker-end: url(#arrow); fill: none; }
       .wave { stroke: #2563eb; stroke-width: 2.4; fill: none; }
       .bar { fill: #2563eb; opacity: 0.75; }
@@ -26,19 +23,15 @@
     </style>
   </defs>
 
-  <rect class="paper" x="0" y="0" width="1280" height="430"/>
+  <rect class="paper" x="0" y="0" width="1280" height="230"/>
   <g>
-    <path class="grid" d="M80 350 H1200"/>
-    <path class="grid" d="M80 290 H1200"/>
-    <path class="grid" d="M80 230 H1200"/>
-    <path class="grid" d="M80 170 H1200"/>
-    <path class="grid" d="M80 110 H1200"/>
+    <path class="grid" d="M80 200 H1200"/>
+    <path class="grid" d="M80 140 H1200"/>
+    <path class="grid" d="M80 80 H1200"/>
+    <path class="grid" d="M80 20 H1200"/>
   </g>
 
-  <text class="title" x="640" y="46" text-anchor="middle">Music-to-Text Framework</text>
-  <text class="subtitle" x="640" y="72" text-anchor="middle">Audio in -> musical analysis -> structured metadata -> LLM-generated descriptions</text>
-
-  <g transform="translate(70 120)">
+  <g transform="translate(70 20)">
     <rect class="panel" x="0" y="0" width="230" height="190"/>
     <text class="label" x="115" y="34" text-anchor="middle">Audio Input</text>
     <path class="wave" d="M34 98 C48 60, 62 136, 76 98 S104 60, 118 98 S146 136, 160 98 S188 60, 202 98"/>
@@ -46,9 +39,9 @@
     <text class="small" x="115" y="163" text-anchor="middle">local files, YouTube, SoundCloud</text>
   </g>
 
-  <path class="arrow" d="M320 215 H405"/>
+  <path class="arrow" d="M320 115 H405"/>
 
-  <g transform="translate(425 120)">
+  <g transform="translate(425 20)">
     <rect class="panel" x="0" y="0" width="230" height="190"/>
     <text class="label" x="115" y="34" text-anchor="middle">Musical Analysis</text>
     <g transform="translate(44 64)">
@@ -63,9 +56,9 @@
     <text class="small" x="115" y="172" text-anchor="middle">sections, energy, onset strength</text>
   </g>
 
-  <path class="arrow" d="M675 215 H760"/>
+  <path class="arrow" d="M675 115 H760"/>
 
-  <g transform="translate(780 120)">
+  <g transform="translate(780 20)">
     <rect class="panel" x="0" y="0" width="230" height="190"/>
     <text class="label" x="115" y="34" text-anchor="middle">Structured Metadata</text>
     <rect class="tag" x="34" y="60" width="74" height="27"/>
@@ -79,9 +72,9 @@
     <text class="mono" x="115" y="160" text-anchor="middle">{ deterministic JSON }</text>
   </g>
 
-  <path class="arrow" d="M1030 215 H1115"/>
+  <path class="arrow" d="M1030 115 H1115"/>
 
-  <g transform="translate(1135 120)">
+  <g transform="translate(1135 20)">
     <rect class="panel-accent" x="0" y="0" width="110" height="190"/>
     <text class="label" x="55" y="34" text-anchor="middle">LLM</text>
     <text class="small" x="55" y="67" text-anchor="middle">summary</text>

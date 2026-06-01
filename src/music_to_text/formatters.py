@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import csv
+import io
 import json
 from typing import Literal
 
 from music_to_text.schemas import AnalysisResult
 
-OutputFormat = Literal["text", "json", "markdown"]
+OutputFormat = Literal["text", "json", "markdown", "csv"]
 
 
 def format_result(
@@ -21,6 +23,8 @@ def format_result(
         return json.dumps(payload, indent=indent)
     if output_format == "markdown":
         return _format_markdown_many(result) if isinstance(result, list) else _format_markdown(result)
+    if output_format == "csv":
+        return _format_csv(result if isinstance(result, list) else [result])
     return _format_text_many(result) if isinstance(result, list) else result.generated_text.short_description
 
 
@@ -80,6 +84,43 @@ def _format_markdown(result: AnalysisResult, heading_level: int = 1) -> str:
         ]
     )
     return "\n".join(lines).strip()
+
+
+def _format_csv(results: list[AnalysisResult]) -> str:
+    buffer = io.StringIO()
+    fieldnames = [
+        "source_path",
+        "mode",
+        "duration_seconds",
+        "tempo_bpm",
+        "key_estimate",
+        "energy_label",
+        "genre_tags",
+        "mood_tags",
+        "production_tags",
+        "llm_used",
+        "short_description",
+    ]
+    writer = csv.DictWriter(buffer, fieldnames=fieldnames)
+    writer.writeheader()
+    for result in results:
+        features = result.features
+        writer.writerow(
+            {
+                "source_path": result.source_path,
+                "mode": result.mode,
+                "duration_seconds": features.duration_seconds,
+                "tempo_bpm": features.tempo_bpm,
+                "key_estimate": features.key_estimate,
+                "energy_label": result.heuristic_tags.energy_label,
+                "genre_tags": ";".join(result.genre_tags),
+                "mood_tags": ";".join(result.mood_tags),
+                "production_tags": ";".join(result.instrument_production_tags),
+                "llm_used": result.llm_used,
+                "short_description": result.generated_text.short_description,
+            }
+        )
+    return buffer.getvalue().strip()
 
 
 def _join_or_dash(values: list[str]) -> str:

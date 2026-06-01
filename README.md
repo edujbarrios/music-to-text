@@ -61,6 +61,7 @@ Analyze one file:
 music-to-text examples/song.mp3 --mode json --pretty
 music-to-text examples/song.mp3 --mode sync --output sync-pitch.json
 music-to-text examples/song.mp3 --format markdown --output report.md
+music-to-text examples/song.mp3 --format csv --output track.csv
 ```
 
 Analyze a YouTube or SoundCloud link:
@@ -86,7 +87,7 @@ Options:
 - `--no-llm`
 - `--output`
 - `--pretty`
-- `--format text|json|markdown`
+- `--format text|json|markdown|csv`
 - `--download-dir`
 - `--recursive`
 
@@ -194,6 +195,7 @@ The result contains:
 - instrument and production tags
 - structured JSON metadata
 - Markdown reports with `--format markdown`
+- CSV rows for catalog and dataset workflows with `--format csv`
 
 Example JSON shape:
 

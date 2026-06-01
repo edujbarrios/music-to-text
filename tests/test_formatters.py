@@ -3,7 +3,27 @@ from music_to_text.schemas import AnalysisResult, AudioFeatures, GeneratedText, 
 
 
 def test_format_result_as_markdown() -> None:
-    result = AnalysisResult(
+    result = _analysis_result()
+
+    markdown = format_result(result, output_format="markdown")
+
+    assert "# Music-to-Text Analysis" in markdown
+    assert "**Source:** `song.wav`" in markdown
+    assert "A concise track description." in markdown
+
+
+def test_format_result_as_csv() -> None:
+    result = _analysis_result()
+
+    csv_output = format_result([result], output_format="csv")
+
+    assert "source_path,mode,duration_seconds" in csv_output
+    assert "song.wav,summary,42.0" in csv_output
+    assert "pop,driving,balanced spectrum" in csv_output
+
+
+def _analysis_result() -> AnalysisResult:
+    return AnalysisResult(
         source_path="song.wav",
         mode="summary",
         features=AudioFeatures(
@@ -30,9 +50,3 @@ def test_format_result_as_markdown() -> None:
         mood_tags=["driving"],
         instrument_production_tags=["balanced spectrum"],
     )
-
-    markdown = format_result(result, output_format="markdown")
-
-    assert "# Music-to-Text Analysis" in markdown
-    assert "**Source:** `song.wav`" in markdown
-    assert "A concise track description." in markdown
