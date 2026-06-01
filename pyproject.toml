@@ -24,7 +24,7 @@ dependencies = [
     "librosa",
     "soundfile",
     "numpy",
-    "pydantic",
+    "pydantic>=2",
     "typer",
     "rich",
     "requests",
