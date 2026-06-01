@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "music-to-text"
+version = "0.1.0"
+description = "Local-first music analysis and text generation framework."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Eduardo J. Barrios" }]
+keywords = ["music", "audio", "llm", "captioning", "metadata"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+]
+dependencies = [
+    "librosa",
+    "soundfile",
+    "numpy",
+    "pydantic",
+    "typer",
+    "rich",
+    "requests",
+    "python-dotenv",
+]
+
+[project.urls]
+Homepage = "https://github.com/edujbarrios/music-to-text"
+Repository = "https://github.com/edujbarrios/music-to-text"
+Issues = "https://github.com/edujbarrios/music-to-text/issues"
+
+[project.scripts]
+music-to-text = "music_to_text.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
