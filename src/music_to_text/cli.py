@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from typing import Annotated
+from pathlib import Path
 
 import typer
 from rich.console import Console
@@ -19,7 +19,7 @@ console = Console()
 
 @app.command()
 def analyze(
-    audio_path: Annotated[Path, typer.Argument(help="Path to an MP3, WAV, FLAC, or M4A file.")],
+    source: Annotated[str, typer.Argument(help="Local audio path, YouTube URL, or SoundCloud URL.")],
     mode: Annotated[OutputMode, typer.Option("--mode", help="Output mode.")] = "summary",
     model: Annotated[str | None, typer.Option("--model", help="OpenAI-compatible model name.")] = None,
     base_url: Annotated[str | None, typer.Option("--base-url", help="OpenAI-compatible API base URL.")] = None,
@@ -27,9 +27,13 @@ def analyze(
     no_llm: Annotated[bool, typer.Option("--no-llm", help="Skip LLM calls and use local deterministic text.")] = False,
     output: Annotated[Path | None, typer.Option("--output", "-o", help="Write JSON result to a file.")] = None,
     pretty: Annotated[bool, typer.Option("--pretty", help="Pretty-print JSON output.")] = False,
+    download_dir: Annotated[
+        Path | None,
+        typer.Option("--download-dir", help="Keep URL downloads in this directory instead of a temporary folder."),
+    ] = None,
 ) -> None:
     analyzer = MusicToText(model=model, base_url=base_url, api_key=api_key)
-    result = analyzer.analyze(audio_path, mode=mode, no_llm=no_llm)
+    result = analyzer.analyze(source, mode=mode, no_llm=no_llm, download_dir=download_dir)
     indent = 2 if pretty or mode == "json" else None
     payload = result.model_dump(mode="json")
     text = json.dumps(payload, indent=indent)
@@ -47,4 +51,3 @@ def analyze(
 
 if __name__ == "__main__":
     app()
-

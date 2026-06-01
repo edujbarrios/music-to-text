@@ -10,6 +10,7 @@ from music_to_text.heuristics import build_heuristic_tags, generate_local_text
 from music_to_text.llm import LLMConfig, OpenAICompatibleClient
 from music_to_text.prompts import build_prompt
 from music_to_text.schemas import AnalysisResult, GeneratedText, OutputMode
+from music_to_text.sources import resolve_audio_source
 
 
 class MusicToText:
@@ -30,50 +31,64 @@ class MusicToText:
         )
         self.client = client or OpenAICompatibleClient(self.config)
 
-    def analyze(self, path: str | Path, mode: OutputMode = "summary", no_llm: bool = False) -> AnalysisResult:
-        features = analyze_audio(path)
-        heuristic_tags = build_heuristic_tags(features)
-        local_text = generate_local_text(features, heuristic_tags, mode)
-        genre_tags = heuristic_tags.genre_hints
-        mood_tags = heuristic_tags.mood_tags
-        production_tags = heuristic_tags.production_descriptors
-        generated_text = local_text
-        llm_used = False
-        extra: dict[str, Any] = {}
+    def analyze(
+        self,
+        source: str | Path,
+        mode: OutputMode = "summary",
+        no_llm: bool = False,
+        download_dir: str | Path | None = None,
+    ) -> AnalysisResult:
+        resolved_source = resolve_audio_source(source, download_dir=download_dir)
+        try:
+            features = analyze_audio(resolved_source.local_path)
+            heuristic_tags = build_heuristic_tags(features)
+            local_text = generate_local_text(features, heuristic_tags, mode)
+            genre_tags = heuristic_tags.genre_hints
+            mood_tags = heuristic_tags.mood_tags
+            production_tags = heuristic_tags.production_descriptors
+            generated_text = local_text
+            llm_used = False
+            extra: dict[str, Any] = {
+                "source_type": resolved_source.source_type,
+                "resolved_path": str(resolved_source.local_path),
+            }
+            if resolved_source.metadata:
+                extra["source_metadata"] = resolved_source.metadata
 
-        if not no_llm:
-            prompt = build_prompt(features, heuristic_tags, mode)
-            llm_payload = self.client.complete_json(prompt)
-            generated_text = GeneratedText(
-                short_description=llm_payload.get("short_description") or local_text.short_description,
-                detailed_ar_description=llm_payload.get("detailed_ar_description") or local_text.detailed_ar_description,
-                pr_pitch=llm_payload.get("pr_pitch") or local_text.pr_pitch,
-                playlist_pitch=llm_payload.get("playlist_pitch") or local_text.playlist_pitch,
-                sync_licensing_pitch=llm_payload.get("sync_licensing_pitch") or local_text.sync_licensing_pitch,
+            if not no_llm:
+                prompt = build_prompt(features, heuristic_tags, mode)
+                llm_payload = self.client.complete_json(prompt)
+                generated_text = GeneratedText(
+                    short_description=llm_payload.get("short_description") or local_text.short_description,
+                    detailed_ar_description=llm_payload.get("detailed_ar_description") or local_text.detailed_ar_description,
+                    pr_pitch=llm_payload.get("pr_pitch") or local_text.pr_pitch,
+                    playlist_pitch=llm_payload.get("playlist_pitch") or local_text.playlist_pitch,
+                    sync_licensing_pitch=llm_payload.get("sync_licensing_pitch") or local_text.sync_licensing_pitch,
+                )
+                genre_tags = _list_or_default(llm_payload.get("genre_tags"), genre_tags)
+                mood_tags = _list_or_default(llm_payload.get("mood_tags"), mood_tags)
+                production_tags = _list_or_default(llm_payload.get("instrument_production_tags"), production_tags)
+                extra["llm_raw"] = llm_payload
+                llm_used = True
+
+            return AnalysisResult(
+                source_path=resolved_source.original,
+                mode=mode,
+                features=features,
+                heuristic_tags=heuristic_tags,
+                generated_text=generated_text,
+                genre_tags=genre_tags,
+                mood_tags=mood_tags,
+                instrument_production_tags=production_tags,
+                llm_used=llm_used,
+                model=self.config.model if llm_used else None,
+                extra=extra,
             )
-            genre_tags = _list_or_default(llm_payload.get("genre_tags"), genre_tags)
-            mood_tags = _list_or_default(llm_payload.get("mood_tags"), mood_tags)
-            production_tags = _list_or_default(llm_payload.get("instrument_production_tags"), production_tags)
-            extra["llm_raw"] = llm_payload
-            llm_used = True
-
-        return AnalysisResult(
-            source_path=str(path),
-            mode=mode,
-            features=features,
-            heuristic_tags=heuristic_tags,
-            generated_text=generated_text,
-            genre_tags=genre_tags,
-            mood_tags=mood_tags,
-            instrument_production_tags=production_tags,
-            llm_used=llm_used,
-            model=self.config.model if llm_used else None,
-            extra=extra,
-        )
+        finally:
+            resolved_source.cleanup()
 
 
 def _list_or_default(value: object, default: list[str]) -> list[str]:
     if isinstance(value, list) and all(isinstance(item, str) for item in value):
         return value
     return default
-

@@ -29,6 +29,7 @@ dependencies = [
     "rich",
     "requests",
     "python-dotenv",
+    "yt-dlp",
 ]
 
 [project.urls]

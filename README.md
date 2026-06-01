@@ -39,6 +39,8 @@ music-to-text examples/song.mp3 --no-llm
 music-to-text examples/song.mp3 --mode pr
 music-to-text examples/song.mp3 --mode json --pretty
 music-to-text examples/song.mp3 --mode sync --output sync-pitch.json
+music-to-text "https://www.youtube.com/watch?v=VIDEO_ID" --no-llm
+music-to-text "https://soundcloud.com/artist/track" --mode playlist
 ```
 
 Options:
@@ -50,6 +52,19 @@ Options:
 - `--no-llm`
 - `--output`
 - `--pretty`
+- `--download-dir`
+
+## YouTube and SoundCloud inputs
+
+Local files are still the default workflow, but the CLI and Python API also accept YouTube and SoundCloud links. URL inputs are downloaded locally with `yt-dlp` before analysis.
+
+```bash
+music-to-text "https://youtu.be/VIDEO_ID" --no-llm --pretty
+music-to-text "https://soundcloud.com/artist/track" --mode pr
+music-to-text "https://www.youtube.com/watch?v=VIDEO_ID" --download-dir downloads --mode json
+```
+
+By default, downloaded URL audio is stored in a temporary folder and removed after analysis. Use `--download-dir` to keep the downloaded file. Only analyze media you have the right to access and process, and follow the terms of the source platform.
 
 ## Python API
 
@@ -59,6 +74,12 @@ from music_to_text import MusicToText
 analyzer = MusicToText()
 result = analyzer.analyze("song.mp3", mode="summary")
 print(result.generated_text.short_description)
+```
+
+URLs work the same way:
+
+```python
+result = analyzer.analyze("https://soundcloud.com/artist/track", mode="playlist", no_llm=True)
 ```
 
 For local deterministic output without an API key:
