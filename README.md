@@ -4,10 +4,6 @@ Text-to-music models are reaching a peak. What about the reverse? Music-to-text 
 
 `music-to-text` is an open-source, local-first Python framework that converts audio into structured musical intelligence and useful text descriptions powered by LLMs.
 
-```text
-audio in -> musical analysis -> structured metadata -> LLM-generated descriptions
-```
-
 <p align="center">
   <img src="assets/music-to-text-pipeline.svg" alt="Music-to-text framework pipeline" width="100%">
 </p>
@@ -64,6 +60,7 @@ Analyze one file:
 ```bash
 music-to-text examples/song.mp3 --mode json --pretty
 music-to-text examples/song.mp3 --mode sync --output sync-pitch.json
+music-to-text examples/song.mp3 --format markdown --output report.md
 ```
 
 Analyze a YouTube or SoundCloud link:
@@ -89,6 +86,7 @@ Options:
 - `--no-llm`
 - `--output`
 - `--pretty`
+- `--format text|json|markdown`
 - `--download-dir`
 - `--recursive`
 
@@ -195,6 +193,7 @@ The result contains:
 - mood tags
 - instrument and production tags
 - structured JSON metadata
+- Markdown reports with `--format markdown`
 
 Example JSON shape:
 

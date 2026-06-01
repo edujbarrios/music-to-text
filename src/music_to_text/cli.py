@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Annotated
 
@@ -11,6 +10,7 @@ from rich.console import Console
 from rich.json import JSON
 
 from music_to_text.core import MusicToText
+from music_to_text.formatters import OutputFormat, format_result
 from music_to_text.schemas import AnalysisResult, OutputMode
 
 app = typer.Typer(add_completion=False, help="Analyze music and generate structured text.")
@@ -27,6 +27,10 @@ def analyze(
     no_llm: Annotated[bool, typer.Option("--no-llm", help="Skip LLM calls and use local deterministic text.")] = False,
     output: Annotated[Path | None, typer.Option("--output", "-o", help="Write JSON result to a file.")] = None,
     pretty: Annotated[bool, typer.Option("--pretty", help="Pretty-print JSON output.")] = False,
+    output_format: Annotated[
+        OutputFormat,
+        typer.Option("--format", help="Output format for stdout or --output."),
+    ] = "text",
     download_dir: Annotated[
         Path | None,
         typer.Option("--download-dir", help="Keep URL downloads in this directory instead of a temporary folder."),
@@ -37,11 +41,11 @@ def analyze(
     source_path = Path(source)
     if source_path.is_dir():
         results = analyzer.analyze_many(source_path, mode=mode, no_llm=no_llm, recursive=recursive)
-        _write_or_print(results, mode=mode, output=output, pretty=pretty)
+        _write_or_print(results, mode=mode, output=output, pretty=pretty, output_format=output_format)
         return
 
     result = analyzer.analyze(source, mode=mode, no_llm=no_llm, download_dir=download_dir)
-    _write_or_print(result, mode=mode, output=output, pretty=pretty)
+    _write_or_print(result, mode=mode, output=output, pretty=pretty, output_format=output_format)
 
 
 def _write_or_print(
@@ -49,23 +53,20 @@ def _write_or_print(
     mode: OutputMode,
     output: Path | None,
     pretty: bool,
+    output_format: OutputFormat,
 ) -> None:
-    indent = 2 if pretty or mode == "json" else None
-    payload = [item.model_dump(mode="json") for item in result] if isinstance(result, list) else result.model_dump(mode="json")
-    text = json.dumps(payload, indent=indent)
+    resolved_format: OutputFormat = "json" if mode == "json" else output_format
+    text = format_result(result, output_format=resolved_format, pretty=pretty or mode == "json")
 
     if output:
         output.write_text(text, encoding="utf-8")
         console.print(f"Wrote analysis to {output}")
         return
 
-    if pretty or mode == "json":
+    if resolved_format == "json":
         console.print(JSON(text))
-    elif isinstance(result, list):
-        for item in result:
-            console.print(f"{item.source_path}: {item.generated_text.short_description}")
     else:
-        console.print(result.generated_text.short_description)
+        console.print(text)
 
 
 if __name__ == "__main__":
