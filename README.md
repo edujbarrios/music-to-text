@@ -8,6 +8,8 @@ Text-to-music models are reaching a peak. What about the reverse? Music-to-text 
 audio in -> musical analysis -> structured metadata -> LLM-generated descriptions
 ```
 
+![Music-to-text framework pipeline](assets/music-to-text-pipeline.svg)
+
 ## Why music-to-text matters
 
 Music catalogs, artists, labels, supervisors, and researchers need language that explains what a track is doing. Today, people still write most of that metadata manually: genre notes, mood tags, playlist pitches, A&R blurbs, and sync descriptions. This project makes that work more reproducible by combining deterministic audio analysis with optional OpenAI-compatible language models.
