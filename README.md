@@ -1,12 +1,12 @@
 # music-to-text
 
-`music-to-text` is an open-source, local-first Python framework that converts audio into structured metadata and text descriptions powered by LLMs.
+**Turn any audio file into structured metadata and ready-to-use music industry copy.**
+
+`music-to-text` is an open-source, local-first Python framework that extracts acoustic features from audio and generates A&R notes, PR pitches, playlist descriptions, and sync licensing blurbs — with or without an LLM.
 
 <p align="center">
   <img src="assets/music-to-text-pipeline.svg" alt="Music-to-text framework pipeline" width="100%">
 </p>
-
-Given an audio file (or a URL you are authorized to access), it extracts acoustic features, generates heuristic tags, and produces ready-to-use copy: A&R notes, PR pitches, playlist descriptions, and sync licensing blurbs — with or without an LLM.
 
 ## Quick Start
 
