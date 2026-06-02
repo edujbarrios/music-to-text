@@ -71,6 +71,8 @@ music-to-text "https://www.youtube.com/watch?v=VIDEO_ID" --no-llm
 music-to-text "https://soundcloud.com/artist/track" --mode playlist
 ```
 
+See `examples/billiejean_example.json` for a reproducible YouTube + llm7.io demo specification. It is intentionally stored as a specification, not a fabricated analysis result, because running it requires media-processing rights and a real API key.
+
 Analyze a folder:
 
 ```bash

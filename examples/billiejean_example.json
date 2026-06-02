@@ -1,0 +1,52 @@
+{
+  "example_name": "billiejean_llm7io_youtube_demo",
+  "status": "not_executed",
+  "reason_not_executed": "This example references a copyrighted YouTube track and requires a real LLM_API_KEY. The repository stores a reproducible demo specification rather than pretending to download audio or call an LLM without permission and credentials.",
+  "source": {
+    "title": "Michael Jackson - Billie Jean (Official Video)",
+    "artist": "Michael Jackson",
+    "platform": "YouTube",
+    "url": "https://www.youtube.com/watch?v=Zi_XLOBDo_Y",
+    "rights_note": "Only run this analysis if you have the right to access and process this media and you comply with the source platform terms."
+  },
+  "llm_provider_example": {
+    "provider_note": "llm7.io is only an example OpenAI-compatible API provider. Any OpenAI-compatible API endpoint should work.",
+    "base_url": "https://api.llm7.io/v1",
+    "model": "gpt-4o-mini",
+    "api_key_env_var": "LLM_API_KEY"
+  },
+  "command": {
+    "with_llm": "music-to-text \"https://www.youtube.com/watch?v=Zi_XLOBDo_Y\" --mode json --base-url https://api.llm7.io/v1 --model gpt-4o-mini --output examples/billiejean_example.json --pretty",
+    "no_llm": "music-to-text \"https://www.youtube.com/watch?v=Zi_XLOBDo_Y\" --mode json --no-llm --output examples/billiejean_example.json --pretty"
+  },
+  "expected_output_shape": {
+    "source_path": "https://www.youtube.com/watch?v=Zi_XLOBDo_Y",
+    "mode": "json",
+    "features": {
+      "duration_seconds": "number",
+      "sample_rate": "integer",
+      "tempo_bpm": "number",
+      "loudness_proxy_db": "number",
+      "spectral_centroid_mean": "number",
+      "chroma_mean": "array[number]",
+      "key_estimate": "string",
+      "onset_strength_mean": "number",
+      "energy_profile": "array[number]",
+      "section_changes_seconds": "array[number]"
+    },
+    "heuristic_tags": {
+      "mood_tags": "array[string]",
+      "genre_hints": "array[string]",
+      "production_descriptors": "array[string]",
+      "energy_label": "string"
+    },
+    "generated_text": {
+      "short_description": "string",
+      "detailed_ar_description": "string|null",
+      "pr_pitch": "string|null",
+      "playlist_pitch": "string|null",
+      "sync_licensing_pitch": "string|null"
+    },
+    "llm_used": "boolean"
+  }
+}
