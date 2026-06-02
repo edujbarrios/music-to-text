@@ -16,6 +16,7 @@ from music_to_text import MusicToText
 
 BILLIE_JEAN_YOUTUBE_URL = "https://www.youtube.com/watch?v=Zi_XLOBDo_Y"
 OUTPUT_PATH = Path(__file__).with_name("billiejean_example.json")
+DOWNLOAD_DIR = Path(__file__).with_name("_downloads")
 LLM_BASE_URL = "https://api.llm7.io/v1"
 LLM_MODEL = "gpt-4o-mini"
 LLM_API_KEY = "unused"
@@ -56,21 +57,28 @@ def _analyze_with_cookie_fallbacks(analyzer: MusicToText):
 
     if local_audio_path:
         print(f"Using local Billie Jean audio file: {local_audio_path}")
-        return analyzer.analyze(local_audio_path, mode="json")
+        return _analyze_with_llm_fallback(analyzer, local_audio_path)
 
     if cookies:
         try:
-            return analyzer.analyze(BILLIE_JEAN_YOUTUBE_URL, mode="json", cookies=cookies)
+            return _analyze_with_llm_fallback(analyzer, BILLIE_JEAN_YOUTUBE_URL, cookies=cookies)
         except DownloadError as exc:
             last_error = exc
-            print(f"cookies file failed, trying browser cookies next: {cookies}")
+            print(f"cookies file failed, trying YouTube fallback next: {cookies}")
+
+    try:
+        print("Trying YouTube download with android player client")
+        return _analyze_with_llm_fallback(analyzer, BILLIE_JEAN_YOUTUBE_URL)
+    except DownloadError as exc:
+        last_error = exc
+        print("YouTube android player fallback failed, trying browser cookies next")
 
     for browser in browser_cookie_sources:
         try:
             print(f"Trying YouTube cookies from browser: {browser}")
-            return analyzer.analyze(
+            return _analyze_with_llm_fallback(
+                analyzer,
                 BILLIE_JEAN_YOUTUBE_URL,
-                mode="json",
                 cookies_from_browser=browser,
             )
         except DownloadError as exc:
@@ -85,6 +93,30 @@ def _browser_cookie_sources() -> tuple[str, ...]:
     if configured:
         return (configured,)
     return DEFAULT_BROWSER_COOKIE_SOURCES
+
+
+def _analyze_with_llm_fallback(
+    analyzer: MusicToText,
+    source: str,
+    cookies: str | None = None,
+    cookies_from_browser: str | None = None,
+):
+    result = analyzer.analyze(
+        source,
+        mode="json",
+        download_dir=DOWNLOAD_DIR,
+        cookies=cookies,
+        cookies_from_browser=cookies_from_browser,
+        llm_fallback=True,
+    )
+    if result.extra.get("llm_fallback_used"):
+        print(f"LLM request failed ({result.extra['llm_error']}); writing no-LLM analysis instead.")
+    result.extra["llm_provider_example"] = {
+        "base_url": LLM_BASE_URL,
+        "model": LLM_MODEL,
+        "api_key": LLM_API_KEY,
+    }
+    return result
 
 
 def _download_help_message() -> str:

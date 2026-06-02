@@ -9,10 +9,11 @@ def test_billiejean_example_json_is_valid() -> None:
 
     payload = json.loads(example_path.read_text(encoding="utf-8"))
 
-    assert payload["example_name"] == "billiejean_llm7io_youtube_demo"
-    assert payload["source"]["url"] == "https://www.youtube.com/watch?v=Zi_XLOBDo_Y"
-    assert payload["llm_provider_example"]["base_url"] == "https://api.llm7.io/v1"
-    assert "with_llm" in payload["command"]
+    assert payload["source_path"] == "https://www.youtube.com/watch?v=Zi_XLOBDo_Y"
+    assert payload["mode"] == "json"
+    assert "features" in payload
+    assert "generated_text" in payload
+    assert payload["extra"]["source_metadata"]["title"] == "Michael Jackson - Billie Jean (Official Video)"
 
 
 def test_billiejean_example_script_configuration() -> None:
@@ -22,6 +23,7 @@ def test_billiejean_example_script_configuration() -> None:
     assert billiejean_example.LLM_API_KEY == "unused"
     assert billiejean_example.BILLIE_JEAN_AUDIO_PATH_ENV == "BILLIE_JEAN_AUDIO_PATH"
     assert billiejean_example.OUTPUT_PATH.name == "billiejean_example.json"
+    assert billiejean_example.DOWNLOAD_DIR.name == "_downloads"
 
 
 def test_billiejean_example_defaults_to_common_browser_cookies(monkeypatch) -> None:
@@ -42,6 +44,26 @@ def test_billiejean_example_help_message_mentions_local_audio_fallback() -> None
     assert "YTDLP_COOKIES" in message
     assert "BILLIE_JEAN_AUDIO_PATH" in message
     assert "python -m pip install -U yt-dlp" in message
+
+
+def test_billiejean_example_llm_fallback_records_error() -> None:
+    class FakeAnalyzer:
+        def analyze(self, source, mode="json", download_dir=None, cookies=None, cookies_from_browser=None, llm_fallback=False):
+            class FakeResult:
+                extra = {
+                    "llm_error": "402 Client Error: Payment Required",
+                    "llm_fallback_used": True,
+                }
+
+            assert llm_fallback is True
+            assert download_dir == billiejean_example.DOWNLOAD_DIR
+            return FakeResult()
+
+    result = billiejean_example._analyze_with_llm_fallback(FakeAnalyzer(), "song.mp3")
+
+    assert result.extra["llm_fallback_used"] is True
+    assert "Payment Required" in result.extra["llm_error"]
+    assert result.extra["llm_provider_example"]["api_key"] == "unused"
 
 
 def test_billiejean_example_main_prints_clean_error(monkeypatch, capsys) -> None:

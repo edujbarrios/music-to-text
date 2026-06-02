@@ -79,6 +79,10 @@ python examples/billiejean_example.py
 
 The script analyzes `https://www.youtube.com/watch?v=Zi_XLOBDo_Y`, uses `api_key="unused"` with the example llm7.io OpenAI-compatible endpoint, and writes the result to `examples/billiejean_example.json`. Only run it if you have the right to access and process the media and you comply with the source platform terms.
 
+For YouTube, `music-to-text` uses yt-dlp's Android player client by default and converts downloaded media to WAV with a portable ffmpeg binary from `imageio-ffmpeg`, which avoids common MP4 decoding issues on systems without ffmpeg installed.
+
+If llm7.io rejects `api_key="unused"` with an HTTP payment/auth error, the demo still writes `examples/billiejean_example.json` using deterministic no-LLM text and records the LLM error in the result metadata.
+
 If YouTube asks yt-dlp to sign in to confirm you are not a bot, the script automatically tries browser cookies from Chrome, Edge, and Firefox. To force a browser where you are signed in:
 
 ```powershell

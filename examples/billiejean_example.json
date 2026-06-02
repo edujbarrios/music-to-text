@@ -1,52 +1,97 @@
 {
-  "example_name": "billiejean_llm7io_youtube_demo",
-  "status": "not_executed",
-  "reason_not_executed": "This example references a copyrighted YouTube track and requires a real LLM_API_KEY. The repository stores a reproducible demo specification rather than pretending to download audio or call an LLM without permission and credentials.",
-  "source": {
-    "title": "Michael Jackson - Billie Jean (Official Video)",
-    "artist": "Michael Jackson",
-    "platform": "YouTube",
-    "url": "https://www.youtube.com/watch?v=Zi_XLOBDo_Y",
-    "rights_note": "Only run this analysis if you have the right to access and process this media and you comply with the source platform terms."
+  "source_path": "https://www.youtube.com/watch?v=Zi_XLOBDo_Y",
+  "mode": "json",
+  "features": {
+    "path": "C:\\Users\\Eduardo J. Barrios\\Desktop\\music-to-text\\examples\\_downloads\\Michael Jackson - Billie Jean (Official Video)-Zi_XLOBDo_Y.wav",
+    "duration_seconds": 295.845,
+    "sample_rate": 44100,
+    "tempo_bpm": 117.45,
+    "loudness_proxy_db": -14.65,
+    "spectral_centroid_mean": 3720.82,
+    "chroma_mean": [
+      0.4895,
+      0.5468,
+      0.4908,
+      0.4902,
+      0.5408,
+      0.5727,
+      0.6314,
+      0.561,
+      0.5646,
+      0.5485,
+      0.4908,
+      0.5007
+    ],
+    "key_estimate": "F#/Gb major/minor estimate",
+    "onset_strength_mean": 1.4009,
+    "energy_profile": [
+      0.807,
+      0.866,
+      1.0,
+      0.875,
+      0.955,
+      0.952,
+      0.896,
+      0.667
+    ],
+    "section_changes_seconds": [
+      277.36
+    ]
   },
-  "llm_provider_example": {
-    "provider_note": "llm7.io is only an example OpenAI-compatible API provider. Any OpenAI-compatible API endpoint should work.",
-    "base_url": "https://api.llm7.io/v1",
-    "model": "gpt-4o-mini",
-    "api_key_env_var": "LLM_API_KEY"
+  "heuristic_tags": {
+    "mood_tags": [
+      "driving",
+      "upbeat"
+    ],
+    "genre_hints": [
+      "pop",
+      "indie"
+    ],
+    "production_descriptors": [
+      "bright",
+      "crisp top end",
+      "forward loudness"
+    ],
+    "energy_label": "high"
   },
-  "command": {
-    "with_llm": "music-to-text \"https://www.youtube.com/watch?v=Zi_XLOBDo_Y\" --mode json --base-url https://api.llm7.io/v1 --model gpt-4o-mini --output examples/billiejean_example.json --pretty",
-    "no_llm": "music-to-text \"https://www.youtube.com/watch?v=Zi_XLOBDo_Y\" --mode json --no-llm --output examples/billiejean_example.json --pretty"
+  "generated_text": {
+    "short_description": "This track is an approximately 295.8s piece around 117 BPM, with a high-energy profile, F#/Gb major/minor estimate, and driving, upbeat character.",
+    "detailed_ar_description": "A&R notes: the recording suggests pop, indie territory with bright, crisp top end, forward loudness. Section-change estimates appear near [277.36] seconds.",
+    "pr_pitch": "PR pitch: a driving, upbeat track with high energy and accessible 117 BPM momentum.",
+    "playlist_pitch": "Playlist pitch: recommended for driving, upbeat playlists with hints of pop, indie.",
+    "sync_licensing_pitch": "Sync pitch: useful for scenes needing driving, upbeat movement and bright, crisp top end."
   },
-  "expected_output_shape": {
-    "source_path": "https://www.youtube.com/watch?v=Zi_XLOBDo_Y",
-    "mode": "json",
-    "features": {
-      "duration_seconds": "number",
-      "sample_rate": "integer",
-      "tempo_bpm": "number",
-      "loudness_proxy_db": "number",
-      "spectral_centroid_mean": "number",
-      "chroma_mean": "array[number]",
-      "key_estimate": "string",
-      "onset_strength_mean": "number",
-      "energy_profile": "array[number]",
-      "section_changes_seconds": "array[number]"
+  "genre_tags": [
+    "pop",
+    "indie"
+  ],
+  "mood_tags": [
+    "driving",
+    "upbeat"
+  ],
+  "instrument_production_tags": [
+    "bright",
+    "crisp top end",
+    "forward loudness"
+  ],
+  "llm_used": false,
+  "model": null,
+  "extra": {
+    "source_type": "url",
+    "resolved_path": "C:\\Users\\Eduardo J. Barrios\\Desktop\\music-to-text\\examples\\_downloads\\Michael Jackson - Billie Jean (Official Video)-Zi_XLOBDo_Y.wav",
+    "source_metadata": {
+      "title": "Michael Jackson - Billie Jean (Official Video)",
+      "uploader": "Michael Jackson",
+      "webpage_url": "https://www.youtube.com/watch?v=Zi_XLOBDo_Y",
+      "extractor": "youtube",
+      "duration": 296
     },
-    "heuristic_tags": {
-      "mood_tags": "array[string]",
-      "genre_hints": "array[string]",
-      "production_descriptors": "array[string]",
-      "energy_label": "string"
-    },
-    "generated_text": {
-      "short_description": "string",
-      "detailed_ar_description": "string|null",
-      "pr_pitch": "string|null",
-      "playlist_pitch": "string|null",
-      "sync_licensing_pitch": "string|null"
-    },
-    "llm_used": "boolean"
+    "llm_error": "402 Client Error: Payment Required for url: https://api.llm7.io/v1/chat/completions",
+    "llm_fallback_used": true,
+    "llm_provider_example": {
+      "base_url": "https://api.llm7.io/v1",
+      "model": "gpt-4o-mini",
+      "api_key": "unused"
+    }
   }
 }

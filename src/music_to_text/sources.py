@@ -20,6 +20,7 @@ SUPPORTED_URL_HOSTS = (
     "on.soundcloud.com",
 )
 SUPPORTED_AUDIO_EXTENSIONS = {".mp3", ".wav", ".flac", ".m4a"}
+DEFAULT_YOUTUBE_PLAYER_CLIENT = "android"
 
 
 @dataclass
@@ -105,6 +106,21 @@ def download_audio_url(
         "quiet": True,
         "no_warnings": True,
     }
+    if _is_youtube_url(url):
+        options["extractor_args"] = {
+            "youtube": {
+                "player_client": [os.getenv("YTDLP_YOUTUBE_PLAYER_CLIENT", DEFAULT_YOUTUBE_PLAYER_CLIENT)]
+            }
+        }
+    ffmpeg_path = _ffmpeg_path()
+    if ffmpeg_path:
+        options["ffmpeg_location"] = ffmpeg_path
+        options["postprocessors"] = [
+            {
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": "wav",
+            }
+        ]
     cookies_path = cookies or os.getenv("YTDLP_COOKIES")
     browser_cookies = cookies_from_browser or os.getenv("YTDLP_COOKIES_FROM_BROWSER")
     if cookies_path:
@@ -142,8 +158,32 @@ def _downloaded_path(downloader: Any, info: dict[str, Any]) -> Path:
     for item in requested_downloads:
         filepath = item.get("filepath")
         if filepath:
-            return Path(filepath)
-    return Path(downloader.prepare_filename(info))
+            path = Path(filepath)
+            postprocessed = _postprocessed_audio_path(path)
+            return postprocessed or path
+    prepared = Path(downloader.prepare_filename(info))
+    return _postprocessed_audio_path(prepared) or prepared
+
+
+def _postprocessed_audio_path(path: Path) -> Path | None:
+    for suffix in (".wav", ".m4a", ".mp3", ".flac"):
+        candidate = path.with_suffix(suffix)
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def _is_youtube_url(value: str) -> bool:
+    host = urlparse(value).netloc.lower()
+    return host in {"youtube.com", "www.youtube.com", "music.youtube.com", "youtu.be"} or host.endswith(".youtube.com")
+
+
+def _ffmpeg_path() -> str | None:
+    try:
+        import imageio_ffmpeg
+    except ImportError:
+        return None
+    return imageio_ffmpeg.get_ffmpeg_exe()
 
 
 def _parse_cookies_from_browser(value: str) -> tuple[str, str | None, str | None, str | None]:

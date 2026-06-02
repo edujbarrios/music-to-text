@@ -5,6 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from requests import RequestException
+
 from music_to_text.audio import analyze_audio
 from music_to_text.heuristics import build_heuristic_tags, generate_local_text
 from music_to_text.llm import LLMConfig, OpenAICompatibleClient
@@ -39,6 +41,7 @@ class MusicToText:
         download_dir: str | Path | None = None,
         cookies: str | Path | None = None,
         cookies_from_browser: str | None = None,
+        llm_fallback: bool = False,
     ) -> AnalysisResult:
         resolved_source = resolve_audio_source(
             source,
@@ -64,19 +67,26 @@ class MusicToText:
 
             if not no_llm:
                 prompt = build_prompt(features, heuristic_tags, mode)
-                llm_payload = self.client.complete_json(prompt)
-                generated_text = GeneratedText(
-                    short_description=llm_payload.get("short_description") or local_text.short_description,
-                    detailed_ar_description=llm_payload.get("detailed_ar_description") or local_text.detailed_ar_description,
-                    pr_pitch=llm_payload.get("pr_pitch") or local_text.pr_pitch,
-                    playlist_pitch=llm_payload.get("playlist_pitch") or local_text.playlist_pitch,
-                    sync_licensing_pitch=llm_payload.get("sync_licensing_pitch") or local_text.sync_licensing_pitch,
-                )
-                genre_tags = _list_or_default(llm_payload.get("genre_tags"), genre_tags)
-                mood_tags = _list_or_default(llm_payload.get("mood_tags"), mood_tags)
-                production_tags = _list_or_default(llm_payload.get("instrument_production_tags"), production_tags)
-                extra["llm_raw"] = llm_payload
-                llm_used = True
+                try:
+                    llm_payload = self.client.complete_json(prompt)
+                except (RequestException, ValueError) as exc:
+                    if not llm_fallback:
+                        raise
+                    extra["llm_error"] = str(exc)
+                    extra["llm_fallback_used"] = True
+                else:
+                    generated_text = GeneratedText(
+                        short_description=llm_payload.get("short_description") or local_text.short_description,
+                        detailed_ar_description=llm_payload.get("detailed_ar_description") or local_text.detailed_ar_description,
+                        pr_pitch=llm_payload.get("pr_pitch") or local_text.pr_pitch,
+                        playlist_pitch=llm_payload.get("playlist_pitch") or local_text.playlist_pitch,
+                        sync_licensing_pitch=llm_payload.get("sync_licensing_pitch") or local_text.sync_licensing_pitch,
+                    )
+                    genre_tags = _list_or_default(llm_payload.get("genre_tags"), genre_tags)
+                    mood_tags = _list_or_default(llm_payload.get("mood_tags"), mood_tags)
+                    production_tags = _list_or_default(llm_payload.get("instrument_production_tags"), production_tags)
+                    extra["llm_raw"] = llm_payload
+                    llm_used = True
 
             return AnalysisResult(
                 source_path=resolved_source.original,

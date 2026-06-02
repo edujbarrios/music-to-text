@@ -30,6 +30,7 @@ dependencies = [
     "requests",
     "python-dotenv",
     "yt-dlp",
+    "imageio-ffmpeg",
 ]
 
 [project.urls]
