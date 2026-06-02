@@ -65,20 +65,60 @@ class OpenAICompatibleClient:
 def _parse_json_content(content: str) -> dict[str, Any]:
     """Parse JSON returned as raw text, fenced markdown, or surrounding prose."""
 
-    cleaned = content.strip()
+    cleaned = re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL | re.IGNORECASE).strip()
     fenced = re.search(r"```(?:json)?\s*(.*?)\s*```", cleaned, flags=re.DOTALL | re.IGNORECASE)
     if fenced:
         cleaned = fenced.group(1).strip()
 
-    try:
-        parsed = json.loads(cleaned)
-    except json.JSONDecodeError:
-        start = cleaned.find("{")
-        end = cleaned.rfind("}")
-        if start == -1 or end == -1 or end <= start:
-            raise
-        parsed = json.loads(cleaned[start : end + 1])
+    parsed = _loads_json_object(cleaned)
+    if parsed is None:
+        for candidate in reversed(_json_object_candidates(cleaned)):
+            parsed = _loads_json_object(candidate)
+            if parsed is not None:
+                break
+    if parsed is None:
+        raise json.JSONDecodeError("No JSON object found in LLM response.", cleaned, 0)
 
+    return parsed
+
+
+def _loads_json_object(value: str) -> dict[str, Any] | None:
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError:
+        return None
     if not isinstance(parsed, dict):
         raise ValueError("LLM response JSON must be an object.")
     return parsed
+
+
+def _json_object_candidates(value: str) -> list[str]:
+    candidates: list[str] = []
+    stack = 0
+    start: int | None = None
+    in_string = False
+    escaped = False
+
+    for index, char in enumerate(value):
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+
+        if char == '"':
+            in_string = True
+        elif char == "{":
+            if stack == 0:
+                start = index
+            stack += 1
+        elif char == "}" and stack:
+            stack -= 1
+            if stack == 0 and start is not None:
+                candidates.append(value[start : index + 1])
+                start = None
+
+    return candidates

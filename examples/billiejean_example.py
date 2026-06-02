@@ -10,6 +10,7 @@ The script writes the analysis result to `examples/billiejean_example.json`.
 from __future__ import annotations
 
 import os
+import warnings
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -29,6 +30,7 @@ BILLIE_JEAN_AUDIO_PATH_ENV = "BILLIE_JEAN_AUDIO_PATH"
 
 
 def run() -> None:
+    _suppress_noisy_dependency_warnings()
     analyzer = MusicToText(
         api_key=LLM_API_KEY,
         base_url=LLM_BASE_URL,
@@ -37,6 +39,12 @@ def run() -> None:
     result = _analyze_with_cookie_fallbacks(analyzer)
     OUTPUT_PATH.write_text(result.model_dump_json(indent=2), encoding="utf-8")
     print(f"Wrote Billie Jean analysis JSON to {OUTPUT_PATH}")
+
+
+def _suppress_noisy_dependency_warnings() -> None:
+    warnings.filterwarnings("ignore", category=DeprecationWarning, module=r"paramiko\..*")
+    warnings.filterwarnings("ignore", message=".*TripleDES.*")
+    warnings.filterwarnings("ignore", message=".*Blowfish.*")
 
 
 def main() -> int:

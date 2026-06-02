@@ -55,26 +55,29 @@
     "energy_label": "high"
   },
   "generated_text": {
-    "short_description": "A high-energy, upbeat pop track with a driving rhythm and crisp production.",
-    "detailed_ar_description": "This track features a tempo of 117.45 BPM, a bright and crisp top-end production, and a forward loudness that makes it stand out. The key is estimated to be F#/Gb major/minor, adding a sense of depth and complexity. The energy profile is consistently high, with notable peaks that enhance its driving and upbeat mood. The spectral centroid suggests a rich mid-to-high frequency content, contributing to its vibrant and engaging sound.",
-    "pr_pitch": "Experience the electrifying energy of this high-tempo pop anthem, perfect for capturing attention and leaving a lasting impression. Its crisp production and driving rhythm make it an ideal choice for dynamic campaigns and vibrant brand messaging.",
-    "playlist_pitch": "Add this high-energy, upbeat pop track to your playlist for an instant boost of energy. Its driving rhythm and crisp production make it a standout choice for any pop or indie music lover looking for a vibrant and engaging listening experience.",
-    "sync_licensing_pitch": "This track's high energy and upbeat mood make it perfect for sync licensing opportunities in ads, trailers, and high-energy scenes. Its crisp production and driving rhythm ensure it will capture attention and enhance any visual content."
+    "short_description": "A high-energy, upbeat pop track with a crisp, bright production and a driving rhythm.",
+    "detailed_ar_description": "This 4-minute, 55-second track features a tempo of 117.45 BPM and a key estimate of F#/Gb major/minor. The spectral centroid suggests a bright tonal character, while the chroma distribution indicates a balanced harmonic structure. The energy profile is consistently high, peaking near the 3-minute mark, with a notable section change at 4:37. The loudness proxy of -14.65 dB and forward loudness descriptor highlight its polished, radio-ready mix.",
+    "pr_pitch": "A timeless, high-energy pop anthem with a crisp, bright production that commands attention. Perfect for showcasing Michael Jackson's iconic sound and influence.",
+    "playlist_pitch": "Ideal for upbeat pop playlists, workout mixes, or throwback dance parties. Its driving rhythm and bright production make it a standout track.",
+    "sync_licensing_pitch": "A dynamic, high-energy track with a bright, crisp production that syncs well with high-energy scenes, dance sequences, or moments requiring a sense of urgency or excitement."
   },
   "genre_tags": [
     "pop",
-    "indie"
+    "indie",
+    "dance-pop"
   ],
   "mood_tags": [
     "driving",
     "upbeat",
-    "high-energy"
+    "energetic",
+    "vibrant"
   ],
   "instrument_production_tags": [
     "bright",
     "crisp top end",
     "forward loudness",
-    "rich mid-to-high frequency content"
+    "polished mix",
+    "balanced harmonics"
   ],
   "llm_used": true,
   "model": "auto",
@@ -89,25 +92,28 @@
       "duration": 296
     },
     "llm_raw": {
-      "short_description": "A high-energy, upbeat pop track with a driving rhythm and crisp production.",
-      "detailed_ar_description": "This track features a tempo of 117.45 BPM, a bright and crisp top-end production, and a forward loudness that makes it stand out. The key is estimated to be F#/Gb major/minor, adding a sense of depth and complexity. The energy profile is consistently high, with notable peaks that enhance its driving and upbeat mood. The spectral centroid suggests a rich mid-to-high frequency content, contributing to its vibrant and engaging sound.",
-      "pr_pitch": "Experience the electrifying energy of this high-tempo pop anthem, perfect for capturing attention and leaving a lasting impression. Its crisp production and driving rhythm make it an ideal choice for dynamic campaigns and vibrant brand messaging.",
-      "playlist_pitch": "Add this high-energy, upbeat pop track to your playlist for an instant boost of energy. Its driving rhythm and crisp production make it a standout choice for any pop or indie music lover looking for a vibrant and engaging listening experience.",
-      "sync_licensing_pitch": "This track's high energy and upbeat mood make it perfect for sync licensing opportunities in ads, trailers, and high-energy scenes. Its crisp production and driving rhythm ensure it will capture attention and enhance any visual content.",
+      "short_description": "A high-energy, upbeat pop track with a crisp, bright production and a driving rhythm.",
+      "detailed_ar_description": "This 4-minute, 55-second track features a tempo of 117.45 BPM and a key estimate of F#/Gb major/minor. The spectral centroid suggests a bright tonal character, while the chroma distribution indicates a balanced harmonic structure. The energy profile is consistently high, peaking near the 3-minute mark, with a notable section change at 4:37. The loudness proxy of -14.65 dB and forward loudness descriptor highlight its polished, radio-ready mix.",
+      "pr_pitch": "A timeless, high-energy pop anthem with a crisp, bright production that commands attention. Perfect for showcasing Michael Jackson's iconic sound and influence.",
+      "playlist_pitch": "Ideal for upbeat pop playlists, workout mixes, or throwback dance parties. Its driving rhythm and bright production make it a standout track.",
+      "sync_licensing_pitch": "A dynamic, high-energy track with a bright, crisp production that syncs well with high-energy scenes, dance sequences, or moments requiring a sense of urgency or excitement.",
       "genre_tags": [
         "pop",
-        "indie"
+        "indie",
+        "dance-pop"
       ],
       "mood_tags": [
         "driving",
         "upbeat",
-        "high-energy"
+        "energetic",
+        "vibrant"
       ],
       "instrument_production_tags": [
         "bright",
         "crisp top end",
         "forward loudness",
-        "rich mid-to-high frequency content"
+        "polished mix",
+        "balanced harmonics"
       ]
     },
     "llm_provider_example": {
