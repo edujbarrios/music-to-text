@@ -55,29 +55,26 @@
     "energy_label": "high"
   },
   "generated_text": {
-    "short_description": "A high-energy, upbeat pop track with a crisp, bright production and a driving rhythm.",
-    "detailed_ar_description": "This 4-minute, 55-second track features a tempo of 117.45 BPM and a key estimate of F#/Gb major/minor. The spectral centroid suggests a bright tonal character, while the chroma distribution indicates a balanced harmonic structure. The energy profile is consistently high, peaking near the 3-minute mark, with a notable section change at 4:37. The loudness proxy of -14.65 dB and forward loudness descriptor highlight its polished, radio-ready mix.",
-    "pr_pitch": "A timeless, high-energy pop anthem with a crisp, bright production that commands attention. Perfect for showcasing Michael Jackson's iconic sound and influence.",
-    "playlist_pitch": "Ideal for upbeat pop playlists, workout mixes, or throwback dance parties. Its driving rhythm and bright production make it a standout track.",
-    "sync_licensing_pitch": "A dynamic, high-energy track with a bright, crisp production that syncs well with high-energy scenes, dance sequences, or moments requiring a sense of urgency or excitement."
+    "short_description": "A high-energy, upbeat pop track with a crisp, bright production and driving rhythm.",
+    "detailed_ar_description": "This track features a tempo of 117 BPM and a key estimate of F#/Gb major/minor, delivering a dynamic and engaging listening experience. The spectral centroid suggests a bright tonal quality, while the loudness proxy indicates a forward, punchy mix. The energy profile remains consistently high, peaking in the middle sections, and the onset strength underscores a strong rhythmic drive. The chroma distribution hints at a rich harmonic palette, balancing major and minor tonalities.",
+    "pr_pitch": "A modern pop anthem with a timeless appeal, blending high-energy beats with a bright, crisp production. Perfect for showcasing an artist's dynamic range and infectious energy.",
+    "playlist_pitch": "Ideal for upbeat pop playlists, workout mixes, or any collection needing a driving, high-energy track with a polished, radio-ready sound.",
+    "sync_licensing_pitch": "Great for sync opportunities in high-energy scenes, such as action sequences, sports highlights, or vibrant commercials. Its bright production and driving rhythm make it versatile for visual media needing an uplifting, engaging soundtrack."
   },
   "genre_tags": [
     "pop",
-    "indie",
-    "dance-pop"
+    "indie"
   ],
   "mood_tags": [
     "driving",
     "upbeat",
-    "energetic",
-    "vibrant"
+    "high-energy"
   ],
   "instrument_production_tags": [
     "bright",
     "crisp top end",
     "forward loudness",
-    "polished mix",
-    "balanced harmonics"
+    "dynamic mix"
   ],
   "llm_used": true,
   "model": "auto",
@@ -92,28 +89,25 @@
       "duration": 296
     },
     "llm_raw": {
-      "short_description": "A high-energy, upbeat pop track with a crisp, bright production and a driving rhythm.",
-      "detailed_ar_description": "This 4-minute, 55-second track features a tempo of 117.45 BPM and a key estimate of F#/Gb major/minor. The spectral centroid suggests a bright tonal character, while the chroma distribution indicates a balanced harmonic structure. The energy profile is consistently high, peaking near the 3-minute mark, with a notable section change at 4:37. The loudness proxy of -14.65 dB and forward loudness descriptor highlight its polished, radio-ready mix.",
-      "pr_pitch": "A timeless, high-energy pop anthem with a crisp, bright production that commands attention. Perfect for showcasing Michael Jackson's iconic sound and influence.",
-      "playlist_pitch": "Ideal for upbeat pop playlists, workout mixes, or throwback dance parties. Its driving rhythm and bright production make it a standout track.",
-      "sync_licensing_pitch": "A dynamic, high-energy track with a bright, crisp production that syncs well with high-energy scenes, dance sequences, or moments requiring a sense of urgency or excitement.",
+      "short_description": "A high-energy, upbeat pop track with a crisp, bright production and driving rhythm.",
+      "detailed_ar_description": "This track features a tempo of 117 BPM and a key estimate of F#/Gb major/minor, delivering a dynamic and engaging listening experience. The spectral centroid suggests a bright tonal quality, while the loudness proxy indicates a forward, punchy mix. The energy profile remains consistently high, peaking in the middle sections, and the onset strength underscores a strong rhythmic drive. The chroma distribution hints at a rich harmonic palette, balancing major and minor tonalities.",
+      "pr_pitch": "A modern pop anthem with a timeless appeal, blending high-energy beats with a bright, crisp production. Perfect for showcasing an artist's dynamic range and infectious energy.",
+      "playlist_pitch": "Ideal for upbeat pop playlists, workout mixes, or any collection needing a driving, high-energy track with a polished, radio-ready sound.",
+      "sync_licensing_pitch": "Great for sync opportunities in high-energy scenes, such as action sequences, sports highlights, or vibrant commercials. Its bright production and driving rhythm make it versatile for visual media needing an uplifting, engaging soundtrack.",
       "genre_tags": [
         "pop",
-        "indie",
-        "dance-pop"
+        "indie"
       ],
       "mood_tags": [
         "driving",
         "upbeat",
-        "energetic",
-        "vibrant"
+        "high-energy"
       ],
       "instrument_production_tags": [
         "bright",
         "crisp top end",
         "forward loudness",
-        "polished mix",
-        "balanced harmonics"
+        "dynamic mix"
       ]
     },
     "llm_provider_example": {
