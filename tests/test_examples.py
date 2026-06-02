@@ -21,3 +21,15 @@ def test_billiejean_example_script_configuration() -> None:
     assert billiejean_example.LLM_MODEL == "gpt-4o-mini"
     assert billiejean_example.LLM_API_KEY == "unused"
     assert billiejean_example.OUTPUT_PATH.name == "billiejean_example.json"
+
+
+def test_billiejean_example_defaults_to_common_browser_cookies(monkeypatch) -> None:
+    monkeypatch.delenv("YTDLP_COOKIES_FROM_BROWSER", raising=False)
+
+    assert billiejean_example._browser_cookie_sources() == ("chrome", "edge", "firefox")
+
+
+def test_billiejean_example_accepts_configured_browser_cookies(monkeypatch) -> None:
+    monkeypatch.setenv("YTDLP_COOKIES_FROM_BROWSER", "chrome:Profile 1")
+
+    assert billiejean_example._browser_cookie_sources() == ("chrome:Profile 1",)

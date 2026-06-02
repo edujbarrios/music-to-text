@@ -79,7 +79,7 @@ python examples/billiejean_example.py
 
 The script analyzes `https://www.youtube.com/watch?v=Zi_XLOBDo_Y`, uses `api_key="unused"` with the example llm7.io OpenAI-compatible endpoint, and writes the result to `examples/billiejean_example.json`. Only run it if you have the right to access and process the media and you comply with the source platform terms.
 
-If YouTube asks yt-dlp to sign in to confirm you are not a bot, pass browser cookies from a browser where you are signed in:
+If YouTube asks yt-dlp to sign in to confirm you are not a bot, the script automatically tries browser cookies from Chrome, Edge, and Firefox. To force a browser where you are signed in:
 
 ```powershell
 $env:YTDLP_COOKIES_FROM_BROWSER="chrome"
