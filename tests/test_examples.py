@@ -42,3 +42,12 @@ def test_billiejean_example_help_message_mentions_local_audio_fallback() -> None
     assert "YTDLP_COOKIES" in message
     assert "BILLIE_JEAN_AUDIO_PATH" in message
     assert "python -m pip install -U yt-dlp" in message
+
+
+def test_billiejean_example_main_prints_clean_error(monkeypatch, capsys) -> None:
+    monkeypatch.setattr(billiejean_example, "run", lambda: (_ for _ in ()).throw(RuntimeError("clean help")))
+
+    exit_code = billiejean_example.main()
+
+    assert exit_code == 1
+    assert capsys.readouterr().out == "clean help\n"

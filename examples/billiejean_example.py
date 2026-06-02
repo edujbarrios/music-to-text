@@ -23,7 +23,7 @@ DEFAULT_BROWSER_COOKIE_SOURCES = ("chrome", "edge", "firefox")
 BILLIE_JEAN_AUDIO_PATH_ENV = "BILLIE_JEAN_AUDIO_PATH"
 
 
-def main() -> None:
+def run() -> None:
     analyzer = MusicToText(
         api_key=LLM_API_KEY,
         base_url=LLM_BASE_URL,
@@ -32,6 +32,15 @@ def main() -> None:
     result = _analyze_with_cookie_fallbacks(analyzer)
     OUTPUT_PATH.write_text(result.model_dump_json(indent=2), encoding="utf-8")
     print(f"Wrote Billie Jean analysis JSON to {OUTPUT_PATH}")
+
+
+def main() -> int:
+    try:
+        run()
+    except RuntimeError as exc:
+        print(exc)
+        return 1
+    return 0
 
 
 def _analyze_with_cookie_fallbacks(analyzer: MusicToText):
@@ -98,4 +107,4 @@ def _download_help_message() -> str:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
