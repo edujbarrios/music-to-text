@@ -55,11 +55,11 @@
     "energy_label": "high"
   },
   "generated_text": {
-    "short_description": "This track is an approximately 295.8s piece around 117 BPM, with a high-energy profile, F#/Gb major/minor estimate, and driving, upbeat character.",
-    "detailed_ar_description": "A&R notes: the recording suggests pop, indie territory with bright, crisp top end, forward loudness. Section-change estimates appear near [277.36] seconds.",
-    "pr_pitch": "PR pitch: a driving, upbeat track with high energy and accessible 117 BPM momentum.",
-    "playlist_pitch": "Playlist pitch: recommended for driving, upbeat playlists with hints of pop, indie.",
-    "sync_licensing_pitch": "Sync pitch: useful for scenes needing driving, upbeat movement and bright, crisp top end."
+    "short_description": "A high-energy, upbeat pop track with a driving rhythm and crisp production.",
+    "detailed_ar_description": "This track features a tempo of 117.45 BPM, a bright and crisp top-end production, and a forward loudness that makes it stand out. The key is estimated to be F#/Gb major/minor, adding a sense of depth and complexity. The energy profile is consistently high, with notable peaks that enhance its driving and upbeat mood. The spectral centroid suggests a rich mid-to-high frequency content, contributing to its vibrant and engaging sound.",
+    "pr_pitch": "Experience the electrifying energy of this high-tempo pop anthem, perfect for capturing attention and leaving a lasting impression. Its crisp production and driving rhythm make it an ideal choice for dynamic campaigns and vibrant brand messaging.",
+    "playlist_pitch": "Add this high-energy, upbeat pop track to your playlist for an instant boost of energy. Its driving rhythm and crisp production make it a standout choice for any pop or indie music lover looking for a vibrant and engaging listening experience.",
+    "sync_licensing_pitch": "This track's high energy and upbeat mood make it perfect for sync licensing opportunities in ads, trailers, and high-energy scenes. Its crisp production and driving rhythm ensure it will capture attention and enhance any visual content."
   },
   "genre_tags": [
     "pop",
@@ -67,15 +67,17 @@
   ],
   "mood_tags": [
     "driving",
-    "upbeat"
+    "upbeat",
+    "high-energy"
   ],
   "instrument_production_tags": [
     "bright",
     "crisp top end",
-    "forward loudness"
+    "forward loudness",
+    "rich mid-to-high frequency content"
   ],
-  "llm_used": false,
-  "model": null,
+  "llm_used": true,
+  "model": "auto",
   "extra": {
     "source_type": "url",
     "resolved_path": "C:\\Users\\Eduardo J. Barrios\\Desktop\\music-to-text\\examples\\_downloads\\Michael Jackson - Billie Jean (Official Video)-Zi_XLOBDo_Y.wav",
@@ -86,12 +88,33 @@
       "extractor": "youtube",
       "duration": 296
     },
-    "llm_error": "402 Client Error: Payment Required for url: https://api.llm7.io/v1/chat/completions",
-    "llm_fallback_used": true,
+    "llm_raw": {
+      "short_description": "A high-energy, upbeat pop track with a driving rhythm and crisp production.",
+      "detailed_ar_description": "This track features a tempo of 117.45 BPM, a bright and crisp top-end production, and a forward loudness that makes it stand out. The key is estimated to be F#/Gb major/minor, adding a sense of depth and complexity. The energy profile is consistently high, with notable peaks that enhance its driving and upbeat mood. The spectral centroid suggests a rich mid-to-high frequency content, contributing to its vibrant and engaging sound.",
+      "pr_pitch": "Experience the electrifying energy of this high-tempo pop anthem, perfect for capturing attention and leaving a lasting impression. Its crisp production and driving rhythm make it an ideal choice for dynamic campaigns and vibrant brand messaging.",
+      "playlist_pitch": "Add this high-energy, upbeat pop track to your playlist for an instant boost of energy. Its driving rhythm and crisp production make it a standout choice for any pop or indie music lover looking for a vibrant and engaging listening experience.",
+      "sync_licensing_pitch": "This track's high energy and upbeat mood make it perfect for sync licensing opportunities in ads, trailers, and high-energy scenes. Its crisp production and driving rhythm ensure it will capture attention and enhance any visual content.",
+      "genre_tags": [
+        "pop",
+        "indie"
+      ],
+      "mood_tags": [
+        "driving",
+        "upbeat",
+        "high-energy"
+      ],
+      "instrument_production_tags": [
+        "bright",
+        "crisp top end",
+        "forward loudness",
+        "rich mid-to-high frequency content"
+      ]
+    },
     "llm_provider_example": {
       "base_url": "https://api.llm7.io/v1",
-      "model": "gpt-4o-mini",
-      "api_key": "unused"
+      "model": "auto",
+      "api_key_env_var": "LLM_API_KEY",
+      "api_key_configured": true
     }
   }
 }

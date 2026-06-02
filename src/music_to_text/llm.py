@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -58,5 +59,26 @@ class OpenAICompatibleClient:
         )
         response.raise_for_status()
         content = response.json()["choices"][0]["message"]["content"]
-        return json.loads(content)
+        return _parse_json_content(content)
 
+
+def _parse_json_content(content: str) -> dict[str, Any]:
+    """Parse JSON returned as raw text, fenced markdown, or surrounding prose."""
+
+    cleaned = content.strip()
+    fenced = re.search(r"```(?:json)?\s*(.*?)\s*```", cleaned, flags=re.DOTALL | re.IGNORECASE)
+    if fenced:
+        cleaned = fenced.group(1).strip()
+
+    try:
+        parsed = json.loads(cleaned)
+    except json.JSONDecodeError:
+        start = cleaned.find("{")
+        end = cleaned.rfind("}")
+        if start == -1 or end == -1 or end <= start:
+            raise
+        parsed = json.loads(cleaned[start : end + 1])
+
+    if not isinstance(parsed, dict):
+        raise ValueError("LLM response JSON must be an object.")
+    return parsed

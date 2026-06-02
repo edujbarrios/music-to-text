@@ -19,8 +19,8 @@ def test_billiejean_example_json_is_valid() -> None:
 def test_billiejean_example_script_configuration() -> None:
     assert billiejean_example.BILLIE_JEAN_YOUTUBE_URL == "https://www.youtube.com/watch?v=Zi_XLOBDo_Y"
     assert billiejean_example.LLM_BASE_URL == "https://api.llm7.io/v1"
-    assert billiejean_example.LLM_MODEL == "gpt-4o-mini"
-    assert billiejean_example.LLM_API_KEY == "unused"
+    assert billiejean_example.LLM_MODEL
+    assert billiejean_example.LLM_API_KEY
     assert billiejean_example.BILLIE_JEAN_AUDIO_PATH_ENV == "BILLIE_JEAN_AUDIO_PATH"
     assert billiejean_example.OUTPUT_PATH.name == "billiejean_example.json"
     assert billiejean_example.DOWNLOAD_DIR.name == "_downloads"
@@ -63,7 +63,8 @@ def test_billiejean_example_llm_fallback_records_error() -> None:
 
     assert result.extra["llm_fallback_used"] is True
     assert "Payment Required" in result.extra["llm_error"]
-    assert result.extra["llm_provider_example"]["api_key"] == "unused"
+    assert result.extra["llm_provider_example"]["api_key_env_var"] == "LLM_API_KEY"
+    assert result.extra["llm_provider_example"]["api_key_configured"] is True
 
 
 def test_billiejean_example_main_prints_clean_error(monkeypatch, capsys) -> None:

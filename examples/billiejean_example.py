@@ -12,14 +12,18 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from music_to_text import MusicToText
+
+load_dotenv()
 
 BILLIE_JEAN_YOUTUBE_URL = "https://www.youtube.com/watch?v=Zi_XLOBDo_Y"
 OUTPUT_PATH = Path(__file__).with_name("billiejean_example.json")
 DOWNLOAD_DIR = Path(__file__).with_name("_downloads")
-LLM_BASE_URL = "https://api.llm7.io/v1"
-LLM_MODEL = "gpt-4o-mini"
-LLM_API_KEY = "unused"
+LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.llm7.io/v1")
+LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
+LLM_API_KEY = os.getenv("LLM_API_KEY", "unused")
 DEFAULT_BROWSER_COOKIE_SOURCES = ("chrome", "edge", "firefox")
 BILLIE_JEAN_AUDIO_PATH_ENV = "BILLIE_JEAN_AUDIO_PATH"
 
@@ -114,7 +118,8 @@ def _analyze_with_llm_fallback(
     result.extra["llm_provider_example"] = {
         "base_url": LLM_BASE_URL,
         "model": LLM_MODEL,
-        "api_key": LLM_API_KEY,
+        "api_key_env_var": "LLM_API_KEY",
+        "api_key_configured": bool(LLM_API_KEY),
     }
     return result
 
