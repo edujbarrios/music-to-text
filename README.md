@@ -79,6 +79,20 @@ python examples/billiejean_example.py
 
 The script analyzes `https://www.youtube.com/watch?v=Zi_XLOBDo_Y`, uses `api_key="unused"` with the example llm7.io OpenAI-compatible endpoint, and writes the result to `examples/billiejean_example.json`. Only run it if you have the right to access and process the media and you comply with the source platform terms.
 
+If YouTube asks yt-dlp to sign in to confirm you are not a bot, pass browser cookies from a browser where you are signed in:
+
+```powershell
+$env:YTDLP_COOKIES_FROM_BROWSER="chrome"
+python examples/billiejean_example.py
+```
+
+Chrome, Edge, and Firefox are common values. For a specific browser profile, use `browser:profile`, for example:
+
+```powershell
+$env:YTDLP_COOKIES_FROM_BROWSER="chrome:Profile 1"
+python examples/billiejean_example.py
+```
+
 Analyze a folder:
 
 ```bash
@@ -97,6 +111,8 @@ Options:
 - `--pretty`
 - `--format text|json|markdown|csv`
 - `--download-dir`
+- `--cookies`
+- `--cookies-from-browser`
 - `--recursive`
 
 ## Inputs
@@ -109,6 +125,7 @@ YouTube and SoundCloud URLs are downloaded locally with `yt-dlp` before analysis
 music-to-text "https://youtu.be/VIDEO_ID" --no-llm --pretty
 music-to-text "https://soundcloud.com/artist/track" --mode pr
 music-to-text "https://www.youtube.com/watch?v=VIDEO_ID" --download-dir downloads --mode json
+music-to-text "https://www.youtube.com/watch?v=VIDEO_ID" --cookies-from-browser chrome --mode json
 ```
 
 By default, downloaded URL audio is stored in a temporary folder and removed after analysis. Use `--download-dir` to keep the downloaded file. Only analyze media you have the right to access and process, and follow the terms of the source platform.

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import tempfile
 from dataclasses import dataclass, field
@@ -34,10 +35,20 @@ class ResolvedAudioSource:
             shutil.rmtree(self._temp_dir, ignore_errors=True)
 
 
-def resolve_audio_source(source: str | Path, download_dir: str | Path | None = None) -> ResolvedAudioSource:
+def resolve_audio_source(
+    source: str | Path,
+    download_dir: str | Path | None = None,
+    cookies: str | Path | None = None,
+    cookies_from_browser: str | None = None,
+) -> ResolvedAudioSource:
     source_text = str(source)
     if is_supported_url(source_text):
-        return download_audio_url(source_text, download_dir=download_dir)
+        return download_audio_url(
+            source_text,
+            download_dir=download_dir,
+            cookies=cookies,
+            cookies_from_browser=cookies_from_browser,
+        )
 
     path = Path(source)
     return ResolvedAudioSource(original=source_text, local_path=path, source_type="file")
@@ -66,7 +77,12 @@ def is_supported_url(value: str) -> bool:
     return host in SUPPORTED_URL_HOSTS or host.endswith(".youtube.com") or host.endswith(".soundcloud.com")
 
 
-def download_audio_url(url: str, download_dir: str | Path | None = None) -> ResolvedAudioSource:
+def download_audio_url(
+    url: str,
+    download_dir: str | Path | None = None,
+    cookies: str | Path | None = None,
+    cookies_from_browser: str | None = None,
+) -> ResolvedAudioSource:
     """Download a YouTube or SoundCloud URL to a local audio file with yt-dlp."""
 
     try:
@@ -89,6 +105,12 @@ def download_audio_url(url: str, download_dir: str | Path | None = None) -> Reso
         "quiet": True,
         "no_warnings": True,
     }
+    cookies_path = cookies or os.getenv("YTDLP_COOKIES")
+    browser_cookies = cookies_from_browser or os.getenv("YTDLP_COOKIES_FROM_BROWSER")
+    if cookies_path:
+        options["cookiefile"] = str(cookies_path)
+    if browser_cookies:
+        options["cookiesfrombrowser"] = _parse_cookies_from_browser(browser_cookies)
 
     with YoutubeDL(options) as downloader:
         info = downloader.extract_info(url, download=True)
@@ -122,3 +144,14 @@ def _downloaded_path(downloader: Any, info: dict[str, Any]) -> Path:
         if filepath:
             return Path(filepath)
     return Path(downloader.prepare_filename(info))
+
+
+def _parse_cookies_from_browser(value: str) -> tuple[str, str | None, str | None, str | None]:
+    """Parse `browser[:profile]` for yt-dlp's cookiesfrombrowser option."""
+
+    browser, _, profile = value.partition(":")
+    browser = browser.strip()
+    profile = profile.strip() or None
+    if not browser:
+        raise ValueError("cookies_from_browser must look like 'chrome' or 'chrome:Profile 1'.")
+    return (browser, profile, None, None)

@@ -37,8 +37,15 @@ class MusicToText:
         mode: OutputMode = "summary",
         no_llm: bool = False,
         download_dir: str | Path | None = None,
+        cookies: str | Path | None = None,
+        cookies_from_browser: str | None = None,
     ) -> AnalysisResult:
-        resolved_source = resolve_audio_source(source, download_dir=download_dir)
+        resolved_source = resolve_audio_source(
+            source,
+            download_dir=download_dir,
+            cookies=cookies,
+            cookies_from_browser=cookies_from_browser,
+        )
         try:
             features = analyze_audio(resolved_source.local_path)
             heuristic_tags = build_heuristic_tags(features)

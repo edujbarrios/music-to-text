@@ -1,6 +1,11 @@
 from pathlib import Path
 
-from music_to_text.sources import collect_audio_files, is_supported_url, resolve_audio_source
+from music_to_text.sources import (
+    _parse_cookies_from_browser,
+    collect_audio_files,
+    is_supported_url,
+    resolve_audio_source,
+)
 
 
 def test_detects_supported_music_urls() -> None:
@@ -24,3 +29,8 @@ def test_collect_audio_files_filters_and_sorts(tmp_path) -> None:
     files = collect_audio_files(tmp_path)
 
     assert [path.name for path in files] == ["a.wav", "b.mp3"]
+
+
+def test_parse_cookies_from_browser() -> None:
+    assert _parse_cookies_from_browser("chrome") == ("chrome", None, None, None)
+    assert _parse_cookies_from_browser("chrome:Profile 1") == ("chrome", "Profile 1", None, None)

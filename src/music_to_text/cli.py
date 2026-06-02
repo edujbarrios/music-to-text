@@ -35,6 +35,14 @@ def analyze(
         Path | None,
         typer.Option("--download-dir", help="Keep URL downloads in this directory instead of a temporary folder."),
     ] = None,
+    cookies: Annotated[
+        Path | None,
+        typer.Option("--cookies", help="Path to a cookies.txt file for yt-dlp URL downloads."),
+    ] = None,
+    cookies_from_browser: Annotated[
+        str | None,
+        typer.Option("--cookies-from-browser", help="Browser cookies for yt-dlp, e.g. chrome, edge, firefox, or chrome:Profile 1."),
+    ] = None,
     recursive: Annotated[bool, typer.Option("--recursive", "-r", help="Analyze audio files recursively when SOURCE is a directory.")] = False,
 ) -> None:
     analyzer = MusicToText(model=model, base_url=base_url, api_key=api_key)
@@ -44,7 +52,14 @@ def analyze(
         _write_or_print(results, mode=mode, output=output, pretty=pretty, output_format=output_format)
         return
 
-    result = analyzer.analyze(source, mode=mode, no_llm=no_llm, download_dir=download_dir)
+    result = analyzer.analyze(
+        source,
+        mode=mode,
+        no_llm=no_llm,
+        download_dir=download_dir,
+        cookies=cookies,
+        cookies_from_browser=cookies_from_browser,
+    )
     _write_or_print(result, mode=mode, output=output, pretty=pretty, output_format=output_format)
 
 

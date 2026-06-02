@@ -9,6 +9,7 @@ The script writes the analysis result to `examples/billiejean_example.json`.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from music_to_text import MusicToText
@@ -26,7 +27,12 @@ def main() -> None:
         base_url=LLM_BASE_URL,
         model=LLM_MODEL,
     )
-    result = analyzer.analyze(BILLIE_JEAN_YOUTUBE_URL, mode="json")
+    result = analyzer.analyze(
+        BILLIE_JEAN_YOUTUBE_URL,
+        mode="json",
+        cookies=os.getenv("YTDLP_COOKIES"),
+        cookies_from_browser=os.getenv("YTDLP_COOKIES_FROM_BROWSER"),
+    )
     OUTPUT_PATH.write_text(result.model_dump_json(indent=2), encoding="utf-8")
     print(f"Wrote Billie Jean analysis JSON to {OUTPUT_PATH}")
 

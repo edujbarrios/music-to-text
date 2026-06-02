@@ -57,7 +57,7 @@ def test_url_analysis_uses_resolved_download_without_network(monkeypatch, tmp_pa
 
     monkeypatch.setattr(
         "music_to_text.core.resolve_audio_source",
-        lambda source, download_dir=None: ResolvedAudioSource(
+        lambda source, download_dir=None, cookies=None, cookies_from_browser=None: ResolvedAudioSource(
             original=str(source),
             local_path=downloaded,
             source_type="url",
