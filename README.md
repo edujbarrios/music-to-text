@@ -134,4 +134,24 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
 Apache License 2.0. See [LICENSE](LICENSE).
 
-If you use this project in a publication, article, or research, you must credit the original author: **Eduardo J. Barrios**, `music-to-text` — https://github.com/edujbarrios/music-to-text
+## Citation
+
+If you use this project in a publication, article, or research, you must credit the original author.
+
+**APA**
+
+```
+Barrios, E. J. (2026). music-to-text: Local-first music analysis and text generation framework [Software]. GitHub. https://github.com/edujbarrios/music-to-text
+```
+
+**BibTeX**
+
+```bibtex
+@software{barrios2026musictotext,
+  author    = {Barrios, Eduardo J.},
+  title     = {music-to-text: Local-first music analysis and text generation framework},
+  year      = {2026},
+  url       = {https://github.com/edujbarrios/music-to-text},
+  note      = {Apache License 2.0}
+}
+```
