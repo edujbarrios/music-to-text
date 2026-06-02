@@ -88,6 +88,9 @@ music-to-text track.mp3 --base-url http://localhost:8000/v1 --model local-model 
 
 ## Example: Billie Jean — Michael Jackson
 
+> [!NOTE]
+> The generated text outputs (short description, A&R, PR pitch, playlist pitch, sync pitch) vary significantly depending on the internal prompt used. The same audio features fed to a differently worded system prompt will produce different copy. The example below reflects the default prompt in [`src/music_to_text/prompts.py`](src/music_to_text/prompts.py).
+
 Analysis of a well-known pop track used to validate the pipeline. Full output in [`examples/billiejean_example.json`](examples/billiejean_example.json).
 
 | Feature | Value |
