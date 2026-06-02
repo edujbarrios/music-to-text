@@ -71,7 +71,13 @@ music-to-text "https://www.youtube.com/watch?v=VIDEO_ID" --no-llm
 music-to-text "https://soundcloud.com/artist/track" --mode playlist
 ```
 
-See `examples/billiejean_example.json` for a reproducible YouTube + llm7.io demo specification. It is intentionally stored as a specification, not a fabricated analysis result, because running it requires media-processing rights and a real API key.
+Run the Billie Jean executable demo:
+
+```bash
+python examples/billiejean_example.py
+```
+
+The script analyzes `https://www.youtube.com/watch?v=Zi_XLOBDo_Y`, uses `api_key="unused"` with the example llm7.io OpenAI-compatible endpoint, and writes the result to `examples/billiejean_example.json`. Only run it if you have the right to access and process the media and you comply with the source platform terms.
 
 Analyze a folder:
 
