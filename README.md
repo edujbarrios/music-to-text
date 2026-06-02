@@ -93,6 +93,21 @@ $env:YTDLP_COOKIES_FROM_BROWSER="chrome:Profile 1"
 python examples/billiejean_example.py
 ```
 
+On Windows, if browser cookies fail with Chrome database locks or DPAPI decrypt errors, use one of these fallbacks:
+
+```powershell
+python -m pip install -U yt-dlp
+$env:YTDLP_COOKIES="C:\path\to\cookies.txt"
+python examples/billiejean_example.py
+```
+
+If you already have the audio locally and only want to test analysis plus llm7.io JSON generation:
+
+```powershell
+$env:BILLIE_JEAN_AUDIO_PATH="C:\path\to\billie-jean.mp3"
+python examples/billiejean_example.py
+```
+
 Analyze a folder:
 
 ```bash

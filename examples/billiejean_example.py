@@ -20,6 +20,7 @@ LLM_BASE_URL = "https://api.llm7.io/v1"
 LLM_MODEL = "gpt-4o-mini"
 LLM_API_KEY = "unused"
 DEFAULT_BROWSER_COOKIE_SOURCES = ("chrome", "edge", "firefox")
+BILLIE_JEAN_AUDIO_PATH_ENV = "BILLIE_JEAN_AUDIO_PATH"
 
 
 def main() -> None:
@@ -40,8 +41,13 @@ def _analyze_with_cookie_fallbacks(analyzer: MusicToText):
         DownloadError = RuntimeError
 
     cookies = os.getenv("YTDLP_COOKIES")
+    local_audio_path = os.getenv(BILLIE_JEAN_AUDIO_PATH_ENV)
     browser_cookie_sources = _browser_cookie_sources()
     last_error: Exception | None = None
+
+    if local_audio_path:
+        print(f"Using local Billie Jean audio file: {local_audio_path}")
+        return analyzer.analyze(local_audio_path, mode="json")
 
     if cookies:
         try:
@@ -62,12 +68,7 @@ def _analyze_with_cookie_fallbacks(analyzer: MusicToText):
             last_error = exc
             print(f"Browser cookies failed: {browser}")
 
-    raise RuntimeError(
-        "Could not download the YouTube audio. Sign in to YouTube in Chrome, Edge, or Firefox, "
-        "close the browser if its cookie database is locked, then rerun this script. You can also "
-        "set YTDLP_COOKIES to a cookies.txt path or YTDLP_COOKIES_FROM_BROWSER to a value like "
-        "'chrome', 'edge', 'firefox', or 'chrome:Profile 1'."
-    ) from last_error
+    raise RuntimeError(_download_help_message()) from last_error
 
 
 def _browser_cookie_sources() -> tuple[str, ...]:
@@ -75,6 +76,25 @@ def _browser_cookie_sources() -> tuple[str, ...]:
     if configured:
         return (configured,)
     return DEFAULT_BROWSER_COOKIE_SOURCES
+
+
+def _download_help_message() -> str:
+    return (
+        "Could not download the YouTube audio.\n\n"
+        "Try one of these options:\n"
+        "1. Close Chrome/Edge completely and rerun the script.\n"
+        "2. Force a signed-in browser profile:\n"
+        "   PowerShell: $env:YTDLP_COOKIES_FROM_BROWSER='chrome:Profile 1'\n"
+        "   Then run:  python examples/billiejean_example.py\n"
+        "3. Export YouTube cookies to cookies.txt and run:\n"
+        "   PowerShell: $env:YTDLP_COOKIES='C:\\path\\to\\cookies.txt'\n"
+        "   Then run:  python examples/billiejean_example.py\n"
+        "4. If you already have the audio locally, bypass YouTube:\n"
+        "   PowerShell: $env:BILLIE_JEAN_AUDIO_PATH='C:\\path\\to\\billie-jean.mp3'\n"
+        "   Then run:  python examples/billiejean_example.py\n"
+        "5. Update yt-dlp, then retry:\n"
+        "   python -m pip install -U yt-dlp\n"
+    )
 
 
 if __name__ == "__main__":

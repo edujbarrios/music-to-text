@@ -20,6 +20,7 @@ def test_billiejean_example_script_configuration() -> None:
     assert billiejean_example.LLM_BASE_URL == "https://api.llm7.io/v1"
     assert billiejean_example.LLM_MODEL == "gpt-4o-mini"
     assert billiejean_example.LLM_API_KEY == "unused"
+    assert billiejean_example.BILLIE_JEAN_AUDIO_PATH_ENV == "BILLIE_JEAN_AUDIO_PATH"
     assert billiejean_example.OUTPUT_PATH.name == "billiejean_example.json"
 
 
@@ -33,3 +34,11 @@ def test_billiejean_example_accepts_configured_browser_cookies(monkeypatch) -> N
     monkeypatch.setenv("YTDLP_COOKIES_FROM_BROWSER", "chrome:Profile 1")
 
     assert billiejean_example._browser_cookie_sources() == ("chrome:Profile 1",)
+
+
+def test_billiejean_example_help_message_mentions_local_audio_fallback() -> None:
+    message = billiejean_example._download_help_message()
+
+    assert "YTDLP_COOKIES" in message
+    assert "BILLIE_JEAN_AUDIO_PATH" in message
+    assert "python -m pip install -U yt-dlp" in message
