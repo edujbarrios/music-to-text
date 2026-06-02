@@ -129,4 +129,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Apache License 2.0. See [LICENSE](LICENSE).
+
+If you use this project in a publication, article, or research, you must credit the original author: **Eduardo J. Barrios**, `music-to-text` — https://github.com/edujbarrios/music-to-text
