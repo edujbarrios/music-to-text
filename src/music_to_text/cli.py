@@ -14,6 +14,7 @@ import music_to_text
 from music_to_text.core import MusicToText
 from music_to_text.formatters import OutputFormat, format_result
 from music_to_text.schemas import AnalysisResult, OutputMode
+from music_to_text.sources import collect_audio_files
 
 app = typer.Typer(add_completion=False, help="Analyze music and generate structured text.")
 console = Console()
@@ -71,10 +72,22 @@ def analyze(
         int | None,
         typer.Option("--limit", min=1, help="Maximum number of audio files to analyze when SOURCE is a directory."),
     ] = None,
+    list_files: Annotated[
+        bool,
+        typer.Option("--list-files", help="List supported audio files in a directory without analyzing them."),
+    ] = False,
 ) -> None:
-    analyzer = MusicToText(model=model, base_url=base_url, api_key=api_key)
     source_path = Path(source)
+    if list_files and not source_path.is_dir():
+        raise typer.BadParameter("--list-files requires SOURCE to be a directory.")
     if source_path.is_dir():
+        if list_files:
+            files = collect_audio_files(source_path, recursive=recursive)
+            if limit is not None:
+                files = files[:limit]
+            console.print("\n".join(str(path) for path in files), soft_wrap=True)
+            return
+        analyzer = MusicToText(model=model, base_url=base_url, api_key=api_key)
         results = analyzer.analyze_many(
             source_path,
             mode=mode,
@@ -86,6 +99,7 @@ def analyze(
         _write_or_print(results, mode=mode, output=output, pretty=pretty, output_format=output_format)
         return
 
+    analyzer = MusicToText(model=model, base_url=base_url, api_key=api_key)
     result = analyzer.analyze(
         source,
         mode=mode,

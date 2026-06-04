@@ -37,6 +37,7 @@ music-to-text your-track.mp3 --mode json --pretty
 music-to-text your-track.mp3 --mode sync --output pitch.json
 music-to-text your-track.mp3 --format markdown --output report.md
 music-to-text your-track.mp3 --format csv --output track.csv
+music-to-text music-folder/ --list-files
 music-to-text music-folder/ --recursive --output catalog.json
 music-to-text music-folder/ --recursive --limit 10 --no-llm
 music-to-text your-track.mp3 --llm-fallback --pretty
@@ -49,9 +50,11 @@ URL sources (YouTube, SoundCloud) are supported via `yt-dlp`. Only use URLs for 
 music-to-text "https://soundcloud.com/artist/track" --mode playlist
 ```
 
-**Options:** `--mode summary|ar|pr|playlist|sync|json` · `--format text|json|markdown|csv` · `--no-llm` · `--llm-fallback` · `--output` · `--pretty` · `--model` · `--base-url` · `--api-key` · `--download-dir` · `--cookies` · `--cookies-from-browser` · `--recursive` · `--limit`
+**Options:** `--mode summary|ar|pr|playlist|sync|json` · `--format text|json|markdown|csv` · `--no-llm` · `--llm-fallback` · `--output` · `--pretty` · `--model` · `--base-url` · `--api-key` · `--download-dir` · `--cookies` · `--cookies-from-browser` · `--recursive` · `--limit` · `--list-files`
 
 Local directory scans include common catalog formats: `.aac`, `.aif`, `.aiff`, `.flac`, `.m4a`, `.mp3`, `.ogg`, `.opus`, `.wav`, and `.wma`.
+
+Markdown and CSV exports include both raw seconds and human-readable durations for easier review.
 
 ## Python API
 
