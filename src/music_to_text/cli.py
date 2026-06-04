@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Annotated
 
@@ -9,6 +10,7 @@ import typer
 from rich.console import Console
 from rich.json import JSON
 
+import music_to_text
 from music_to_text.core import MusicToText
 from music_to_text.formatters import OutputFormat, format_result
 from music_to_text.schemas import AnalysisResult, OutputMode
@@ -17,9 +19,26 @@ app = typer.Typer(add_completion=False, help="Analyze music and generate structu
 console = Console()
 
 
+def _installed_version() -> str:
+    try:
+        return version("music-to-text")
+    except PackageNotFoundError:
+        return music_to_text.__version__
+
+
+def _version_callback(value: bool) -> None:
+    if value:
+        console.print(f"music-to-text {_installed_version()}")
+        raise typer.Exit
+
+
 @app.command()
 def analyze(
     source: Annotated[str, typer.Argument(help="Local audio path, YouTube URL, or SoundCloud URL.")],
+    show_version: Annotated[
+        bool,
+        typer.Option("--version", callback=_version_callback, is_eager=True, help="Show the installed package version."),
+    ] = False,
     mode: Annotated[OutputMode, typer.Option("--mode", help="Output mode.")] = "summary",
     model: Annotated[str | None, typer.Option("--model", help="OpenAI-compatible model name.")] = None,
     base_url: Annotated[str | None, typer.Option("--base-url", help="OpenAI-compatible API base URL.")] = None,

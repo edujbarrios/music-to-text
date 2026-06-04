@@ -40,6 +40,7 @@ music-to-text your-track.mp3 --format csv --output track.csv
 music-to-text music-folder/ --recursive --output catalog.json
 music-to-text music-folder/ --recursive --limit 10 --no-llm
 music-to-text your-track.mp3 --llm-fallback --pretty
+music-to-text --version
 ```
 
 URL sources (YouTube, SoundCloud) are supported via `yt-dlp`. Only use URLs for media you have the right to access and process, and comply with the terms of the source platform.
@@ -49,6 +50,8 @@ music-to-text "https://soundcloud.com/artist/track" --mode playlist
 ```
 
 **Options:** `--mode summary|ar|pr|playlist|sync|json` · `--format text|json|markdown|csv` · `--no-llm` · `--llm-fallback` · `--output` · `--pretty` · `--model` · `--base-url` · `--api-key` · `--download-dir` · `--cookies` · `--cookies-from-browser` · `--recursive` · `--limit`
+
+Local directory scans include common catalog formats: `.aac`, `.aif`, `.aiff`, `.flac`, `.m4a`, `.mp3`, `.ogg`, `.opus`, `.wav`, and `.wma`.
 
 ## Python API
 
