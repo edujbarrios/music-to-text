@@ -2,6 +2,7 @@ from pathlib import Path
 
 from music_to_text.sources import (
     DEFAULT_YOUTUBE_PLAYER_CLIENT,
+    SUPPORTED_AUDIO_EXTENSIONS,
     _postprocessed_audio_path,
     _is_youtube_url,
     _parse_cookies_from_browser,
@@ -26,12 +27,16 @@ def test_local_paths_are_resolved_without_download() -> None:
 
 def test_collect_audio_files_filters_and_sorts(tmp_path) -> None:
     (tmp_path / "b.mp3").write_bytes(b"fake")
-    (tmp_path / "a.wav").write_bytes(b"fake")
+    (tmp_path / "a.opus").write_bytes(b"fake")
     (tmp_path / "cover.png").write_bytes(b"fake")
 
     files = collect_audio_files(tmp_path)
 
-    assert [path.name for path in files] == ["a.wav", "b.mp3"]
+    assert [path.name for path in files] == ["a.opus", "b.mp3"]
+
+
+def test_supported_audio_extensions_cover_common_catalog_formats() -> None:
+    assert {".aac", ".aiff", ".ogg", ".opus", ".wma"}.issubset(SUPPORTED_AUDIO_EXTENSIONS)
 
 
 def test_parse_cookies_from_browser() -> None:

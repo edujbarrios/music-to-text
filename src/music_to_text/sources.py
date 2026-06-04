@@ -19,7 +19,18 @@ SUPPORTED_URL_HOSTS = (
     "www.soundcloud.com",
     "on.soundcloud.com",
 )
-SUPPORTED_AUDIO_EXTENSIONS = {".mp3", ".wav", ".flac", ".m4a"}
+SUPPORTED_AUDIO_EXTENSIONS = {
+    ".aac",
+    ".aif",
+    ".aiff",
+    ".flac",
+    ".m4a",
+    ".mp3",
+    ".ogg",
+    ".opus",
+    ".wav",
+    ".wma",
+}
 DEFAULT_YOUTUBE_PLAYER_CLIENT = "android"
 
 
