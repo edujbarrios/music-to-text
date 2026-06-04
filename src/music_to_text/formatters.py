@@ -50,12 +50,21 @@ def _format_markdown(result: AnalysisResult, heading_level: int = 1) -> str:
         f"**Source:** `{result.source_path}`",
         f"**Mode:** `{result.mode}`",
         f"**LLM used:** `{result.llm_used}`",
-        "",
-        "## Description" if heading_level == 1 else "### Description",
-        "",
-        text.short_description,
-        "",
     ]
+    if result.model:
+        lines.append(f"**Model:** `{result.model}`")
+    if result.extra.get("llm_fallback_used"):
+        lines.append("**LLM fallback:** local deterministic text used after an LLM error")
+    lines.extend(_format_source_metadata(result))
+    lines.extend(
+        [
+            "",
+            "## Description" if heading_level == 1 else "### Description",
+            "",
+            text.short_description,
+            "",
+        ]
+    )
     optional_sections = [
         ("A&R Notes", text.detailed_ar_description),
         ("PR Pitch", text.pr_pitch),
@@ -92,13 +101,18 @@ def _format_csv(results: list[AnalysisResult]) -> str:
         "source_path",
         "mode",
         "duration_seconds",
+        "sample_rate",
         "tempo_bpm",
         "key_estimate",
+        "loudness_proxy_db",
+        "spectral_centroid_mean",
         "energy_label",
         "genre_tags",
         "mood_tags",
         "production_tags",
         "llm_used",
+        "model",
+        "source_type",
         "short_description",
     ]
     writer = csv.DictWriter(buffer, fieldnames=fieldnames)
@@ -110,13 +124,18 @@ def _format_csv(results: list[AnalysisResult]) -> str:
                 "source_path": result.source_path,
                 "mode": result.mode,
                 "duration_seconds": features.duration_seconds,
+                "sample_rate": features.sample_rate,
                 "tempo_bpm": features.tempo_bpm,
                 "key_estimate": features.key_estimate,
+                "loudness_proxy_db": features.loudness_proxy_db,
+                "spectral_centroid_mean": features.spectral_centroid_mean,
                 "energy_label": result.heuristic_tags.energy_label,
                 "genre_tags": ";".join(result.genre_tags),
                 "mood_tags": ";".join(result.mood_tags),
                 "production_tags": ";".join(result.instrument_production_tags),
                 "llm_used": result.llm_used,
+                "model": result.model or "",
+                "source_type": result.extra.get("source_type", ""),
                 "short_description": result.generated_text.short_description,
             }
         )
@@ -125,3 +144,20 @@ def _format_csv(results: list[AnalysisResult]) -> str:
 
 def _join_or_dash(values: list[str]) -> str:
     return ", ".join(values) if values else "-"
+
+
+def _format_source_metadata(result: AnalysisResult) -> list[str]:
+    metadata = result.extra.get("source_metadata")
+    if not isinstance(metadata, dict):
+        return []
+
+    lines = []
+    for label, key in (
+        ("Title", "title"),
+        ("Uploader", "uploader"),
+        ("URL", "webpage_url"),
+    ):
+        value = metadata.get(key)
+        if value:
+            lines.append(f"**{label}:** {value}")
+    return lines

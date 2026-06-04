@@ -9,6 +9,8 @@ def test_format_result_as_markdown() -> None:
 
     assert "# Music-to-Text Analysis" in markdown
     assert "**Source:** `song.wav`" in markdown
+    assert "**Model:** `test-model`" in markdown
+    assert "**Title:** Example Song" in markdown
     assert "A concise track description." in markdown
 
 
@@ -17,9 +19,9 @@ def test_format_result_as_csv() -> None:
 
     csv_output = format_result([result], output_format="csv")
 
-    assert "source_path,mode,duration_seconds" in csv_output
-    assert "song.wav,summary,42.0" in csv_output
-    assert "pop,driving,balanced spectrum" in csv_output
+    assert "source_path,mode,duration_seconds,sample_rate" in csv_output
+    assert "song.wav,summary,42.0,44100,120.0" in csv_output
+    assert "True,test-model,file,A concise track description." in csv_output
 
 
 def _analysis_result() -> AnalysisResult:
@@ -49,4 +51,14 @@ def _analysis_result() -> AnalysisResult:
         genre_tags=["pop"],
         mood_tags=["driving"],
         instrument_production_tags=["balanced spectrum"],
+        llm_used=True,
+        model="test-model",
+        extra={
+            "source_type": "file",
+            "source_metadata": {
+                "title": "Example Song",
+                "uploader": "Example Artist",
+                "webpage_url": "https://example.com/song",
+            },
+        },
     )
