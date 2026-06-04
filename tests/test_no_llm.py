@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from music_to_text.core import MusicToText
 from music_to_text.schemas import AudioFeatures
 from music_to_text.sources import ResolvedAudioSource
@@ -107,3 +109,60 @@ def test_analyze_many_processes_supported_audio_files(monkeypatch, tmp_path) -> 
     results = analyzer.analyze_many(tmp_path, no_llm=True)
 
     assert [Path(result.source_path).name for result in results] == ["a.wav", "b.mp3"]
+
+
+def test_analyze_many_can_limit_supported_audio_files(monkeypatch, tmp_path) -> None:
+    for name in ("a.wav", "b.mp3", "c.flac"):
+        (tmp_path / name).write_bytes(b"fake")
+
+    class FailingClient:
+        def complete_json(self, prompt: str) -> dict[str, object]:
+            raise AssertionError("LLM client should not be called")
+
+    def fake_analyze_audio(path: Path) -> AudioFeatures:
+        return AudioFeatures(
+            path=str(path),
+            duration_seconds=30.0,
+            sample_rate=44100,
+            tempo_bpm=110.0,
+            loudness_proxy_db=-18.0,
+            spectral_centroid_mean=2200.0,
+            chroma_mean=[0.1] * 12,
+            key_estimate="C major/minor estimate",
+            onset_strength_mean=1.0,
+            energy_profile=[1.0],
+            section_changes_seconds=[],
+        )
+
+    monkeypatch.setattr("music_to_text.core.analyze_audio", fake_analyze_audio)
+
+    analyzer = MusicToText(api_key=None, client=FailingClient())
+    results = analyzer.analyze_many(tmp_path, no_llm=True, limit=2)
+
+    assert [Path(result.source_path).name for result in results] == ["a.wav", "b.mp3"]
+
+
+def test_analyze_many_rejects_invalid_limit(tmp_path) -> None:
+    analyzer = MusicToText(api_key=None)
+
+    with pytest.raises(ValueError, match="limit"):
+        analyzer.analyze_many(tmp_path, no_llm=True, limit=0)
+
+
+def test_analyze_many_passes_llm_fallback(monkeypatch, tmp_path) -> None:
+    track = tmp_path / "a.wav"
+    track.write_bytes(b"fake")
+    calls = []
+
+    analyzer = MusicToText(api_key=None)
+
+    def fake_analyze(path: Path, mode="summary", no_llm=False, llm_fallback=False):
+        calls.append((path, mode, no_llm, llm_fallback))
+        return object()
+
+    monkeypatch.setattr(analyzer, "analyze", fake_analyze)
+
+    results = analyzer.analyze_many(tmp_path, mode="pr", no_llm=False, llm_fallback=True)
+
+    assert len(results) == 1
+    assert calls == [(track, "pr", False, True)]

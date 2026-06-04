@@ -38,6 +38,8 @@ music-to-text your-track.mp3 --mode sync --output pitch.json
 music-to-text your-track.mp3 --format markdown --output report.md
 music-to-text your-track.mp3 --format csv --output track.csv
 music-to-text music-folder/ --recursive --output catalog.json
+music-to-text music-folder/ --recursive --limit 10 --no-llm
+music-to-text your-track.mp3 --llm-fallback --pretty
 ```
 
 URL sources (YouTube, SoundCloud) are supported via `yt-dlp`. Only use URLs for media you have the right to access and process, and comply with the terms of the source platform.
@@ -46,7 +48,7 @@ URL sources (YouTube, SoundCloud) are supported via `yt-dlp`. Only use URLs for 
 music-to-text "https://soundcloud.com/artist/track" --mode playlist
 ```
 
-**Options:** `--mode summary|ar|pr|playlist|sync|json` · `--format text|json|markdown|csv` · `--no-llm` · `--output` · `--pretty` · `--model` · `--base-url` · `--api-key` · `--download-dir` · `--cookies` · `--cookies-from-browser` · `--recursive`
+**Options:** `--mode summary|ar|pr|playlist|sync|json` · `--format text|json|markdown|csv` · `--no-llm` · `--llm-fallback` · `--output` · `--pretty` · `--model` · `--base-url` · `--api-key` · `--download-dir` · `--cookies` · `--cookies-from-browser` · `--recursive` · `--limit`
 
 ## Python API
 
@@ -62,6 +64,7 @@ result = analyzer.analyze("your-track.mp3", mode="summary", no_llm=True)
 
 # Batch
 results = analyzer.analyze_many("music-folder/", mode="summary", no_llm=True, recursive=True)
+sample = analyzer.analyze_many("music-folder/", mode="summary", no_llm=True, limit=10)
 ```
 
 ## LLM Setup
@@ -117,14 +120,6 @@ music-to-text your-track.mp3 --no-llm --pretty
 ```
 
 Returns extracted features and heuristic tags with no API calls. All tests run in this mode.
-
-## Roadmap
-
-- Whisper transcription
-- CLAP / MERT / MuLan embeddings
-- similarity search and dataset export
-- web UI
-- evaluation benchmarks for music captioning
 
 ## Contributing
 

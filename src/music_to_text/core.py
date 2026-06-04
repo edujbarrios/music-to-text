@@ -110,11 +110,17 @@ class MusicToText:
         mode: OutputMode = "summary",
         no_llm: bool = False,
         recursive: bool = False,
+        limit: int | None = None,
+        llm_fallback: bool = False,
     ) -> list[AnalysisResult]:
         """Analyze all supported audio files in a local directory."""
 
         files = collect_audio_files(directory, recursive=recursive)
-        return [self.analyze(path, mode=mode, no_llm=no_llm) for path in files]
+        if limit is not None:
+            if limit < 1:
+                raise ValueError("limit must be greater than zero")
+            files = files[:limit]
+        return [self.analyze(path, mode=mode, no_llm=no_llm, llm_fallback=llm_fallback) for path in files]
 
 
 def _list_or_default(value: object, default: list[str]) -> list[str]:

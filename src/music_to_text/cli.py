@@ -25,6 +25,10 @@ def analyze(
     base_url: Annotated[str | None, typer.Option("--base-url", help="OpenAI-compatible API base URL.")] = None,
     api_key: Annotated[str | None, typer.Option("--api-key", help="API key. Prefer LLM_API_KEY.")] = None,
     no_llm: Annotated[bool, typer.Option("--no-llm", help="Skip LLM calls and use local deterministic text.")] = False,
+    llm_fallback: Annotated[
+        bool,
+        typer.Option("--llm-fallback", help="Use local deterministic text if the LLM request fails."),
+    ] = False,
     output: Annotated[Path | None, typer.Option("--output", "-o", help="Write JSON result to a file.")] = None,
     pretty: Annotated[bool, typer.Option("--pretty", help="Pretty-print JSON output.")] = False,
     output_format: Annotated[
@@ -44,11 +48,22 @@ def analyze(
         typer.Option("--cookies-from-browser", help="Browser cookies for yt-dlp, e.g. chrome, edge, firefox, or chrome:Profile 1."),
     ] = None,
     recursive: Annotated[bool, typer.Option("--recursive", "-r", help="Analyze audio files recursively when SOURCE is a directory.")] = False,
+    limit: Annotated[
+        int | None,
+        typer.Option("--limit", min=1, help="Maximum number of audio files to analyze when SOURCE is a directory."),
+    ] = None,
 ) -> None:
     analyzer = MusicToText(model=model, base_url=base_url, api_key=api_key)
     source_path = Path(source)
     if source_path.is_dir():
-        results = analyzer.analyze_many(source_path, mode=mode, no_llm=no_llm, recursive=recursive)
+        results = analyzer.analyze_many(
+            source_path,
+            mode=mode,
+            no_llm=no_llm,
+            recursive=recursive,
+            limit=limit,
+            llm_fallback=llm_fallback,
+        )
         _write_or_print(results, mode=mode, output=output, pretty=pretty, output_format=output_format)
         return
 
@@ -59,6 +74,7 @@ def analyze(
         download_dir=download_dir,
         cookies=cookies,
         cookies_from_browser=cookies_from_browser,
+        llm_fallback=llm_fallback,
     )
     _write_or_print(result, mode=mode, output=output, pretty=pretty, output_format=output_format)
 
