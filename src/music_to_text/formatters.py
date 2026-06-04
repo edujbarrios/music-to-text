@@ -85,7 +85,7 @@ def _format_markdown(result: AnalysisResult, heading_level: int = 1) -> str:
             "",
             "## Features" if heading_level == 1 else "### Features",
             "",
-            f"- Duration: {features.duration_seconds:.2f}s",
+            f"- Duration: {features.duration_seconds:.2f}s ({_format_duration(features.duration_seconds)})",
             f"- Tempo: {features.tempo_bpm:.2f} BPM",
             f"- Key estimate: {features.key_estimate}",
             f"- Loudness proxy: {features.loudness_proxy_db:.2f} dB",
@@ -101,6 +101,7 @@ def _format_csv(results: list[AnalysisResult]) -> str:
         "source_path",
         "mode",
         "duration_seconds",
+        "duration",
         "sample_rate",
         "tempo_bpm",
         "key_estimate",
@@ -124,6 +125,7 @@ def _format_csv(results: list[AnalysisResult]) -> str:
                 "source_path": result.source_path,
                 "mode": result.mode,
                 "duration_seconds": features.duration_seconds,
+                "duration": _format_duration(features.duration_seconds),
                 "sample_rate": features.sample_rate,
                 "tempo_bpm": features.tempo_bpm,
                 "key_estimate": features.key_estimate,
@@ -144,6 +146,15 @@ def _format_csv(results: list[AnalysisResult]) -> str:
 
 def _join_or_dash(values: list[str]) -> str:
     return ", ".join(values) if values else "-"
+
+
+def _format_duration(seconds: float) -> str:
+    total_seconds = max(0, int(round(seconds)))
+    minutes, seconds_part = divmod(total_seconds, 60)
+    hours, minutes_part = divmod(minutes, 60)
+    if hours:
+        return f"{hours}:{minutes_part:02d}:{seconds_part:02d}"
+    return f"{minutes_part}:{seconds_part:02d}"
 
 
 def _format_source_metadata(result: AnalysisResult) -> list[str]:

@@ -11,6 +11,7 @@ def test_format_result_as_markdown() -> None:
     assert "**Source:** `song.wav`" in markdown
     assert "**Model:** `test-model`" in markdown
     assert "**Title:** Example Song" in markdown
+    assert "- Duration: 42.00s (0:42)" in markdown
     assert "A concise track description." in markdown
 
 
@@ -19,8 +20,8 @@ def test_format_result_as_csv() -> None:
 
     csv_output = format_result([result], output_format="csv")
 
-    assert "source_path,mode,duration_seconds,sample_rate" in csv_output
-    assert "song.wav,summary,42.0,44100,120.0" in csv_output
+    assert "source_path,mode,duration_seconds,duration,sample_rate" in csv_output
+    assert "song.wav,summary,42.0,0:42,44100,120.0" in csv_output
     assert "True,test-model,file,A concise track description." in csv_output
 
 
