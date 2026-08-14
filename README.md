@@ -14,14 +14,18 @@
 git clone https://github.com/edujbarrios/music-to-text.git
 cd music-to-text
 python -m venv .venv
-source .venv/bin/activate  # Windows: .\.venv\Scripts\Activate.ps1
+```
+
+Activate the environment before installing: `source .venv/bin/activate` on macOS/Linux or `.\.venv\Scripts\Activate.ps1` in Windows PowerShell.
+
+```bash
 pip install -e .
 ```
 
 Run without an API key:
 
 ```bash
-music-to-text your-track.mp3 --no-llm --pretty
+music-to-text your-track.mp3 --mode json --no-llm --pretty
 ```
 
 Run with an OpenAI-compatible API:
@@ -31,6 +35,8 @@ music-to-text your-track.mp3 --mode pr
 ```
 
 ## CLI
+
+`SOURCE` can be one local audio file, a directory, or a supported YouTube or SoundCloud URL. Use `--recursive` to include subdirectories and `--limit` to cap the number of files processed.
 
 ```bash
 music-to-text your-track.mp3 --mode json --pretty
@@ -44,7 +50,19 @@ music-to-text your-track.mp3 --llm-fallback --pretty
 music-to-text --version
 ```
 
-URL sources (YouTube, SoundCloud) are supported via `yt-dlp`. Only use URLs for media you have the right to access and process, and comply with the terms of the source platform.
+`--mode` controls which kind of music-industry copy is generated. `--format` controls how the result is serialized for the terminal or an output file. The `json` mode always produces JSON; other modes can be rendered as text, JSON, Markdown, or CSV.
+
+| Goal | Example |
+|---|---|
+| Deterministic local analysis | `music-to-text track.mp3 --mode json --no-llm --pretty` |
+| Generate a PR pitch with an LLM | `music-to-text track.mp3 --mode pr` |
+| Fall back locally if the LLM fails | `music-to-text track.mp3 --llm-fallback` |
+| Save a readable report | `music-to-text track.mp3 --format markdown -o reports/track.md` |
+| Process a catalog recursively | `music-to-text catalog/ --recursive --format csv -o reports/catalog.csv` |
+
+Parent directories supplied to `--output` are created automatically.
+
+URL sources are downloaded through `yt-dlp`. YouTube and SoundCloud are supported; other web hosts are rejected with a clear error. Only process media you have the right to access, and comply with the source platform's terms.
 
 ```bash
 music-to-text "https://soundcloud.com/artist/track" --mode playlist
@@ -54,7 +72,7 @@ music-to-text "https://soundcloud.com/artist/track" --mode playlist
 
 Local directory scans include common catalog formats: `.aac`, `.aif`, `.aiff`, `.flac`, `.m4a`, `.mp3`, `.ogg`, `.opus`, `.wav`, and `.wma`.
 
-Markdown and CSV exports include both raw seconds and human-readable durations for easier review.
+JSON preserves Unicode text such as international artist names. Markdown and CSV exports include both raw seconds and human-readable durations for easier review.
 
 ## Python API
 
@@ -122,10 +140,10 @@ Analysis of a well-known pop track used to validate the pipeline. Full output in
 ## No-LLM Mode
 
 ```bash
-music-to-text your-track.mp3 --no-llm --pretty
+music-to-text your-track.mp3 --mode json --no-llm --pretty
 ```
 
-Returns extracted features and heuristic tags with no API calls. All tests run in this mode.
+Returns extracted features, heuristic tags, and deterministic local copy with no API calls. Use `--llm-fallback` instead when you want to try the configured LLM first and use local output only if that request fails. All tests run without making LLM API calls.
 
 ## Contributing
 
