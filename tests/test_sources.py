@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from music_to_text.sources import (
     DEFAULT_YOUTUBE_PLAYER_CLIENT,
     SUPPORTED_AUDIO_EXTENSIONS,
@@ -23,6 +25,11 @@ def test_local_paths_are_resolved_without_download() -> None:
 
     assert resolved.source_type == "file"
     assert resolved.local_path == Path("song.wav")
+
+
+def test_unsupported_web_url_has_actionable_error() -> None:
+    with pytest.raises(ValueError, match="Supported providers are YouTube and SoundCloud"):
+        resolve_audio_source("https://example.com/song.mp3")
 
 
 def test_collect_audio_files_filters_and_sorts(tmp_path) -> None:
