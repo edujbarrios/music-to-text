@@ -62,6 +62,12 @@ def resolve_audio_source(
             cookies_from_browser=cookies_from_browser,
         )
 
+    parsed = urlparse(source_text)
+    if parsed.scheme in {"http", "https"} and parsed.netloc:
+        raise ValueError(
+            "Unsupported audio URL. Supported providers are YouTube and SoundCloud."
+        )
+
     path = Path(source)
     return ResolvedAudioSource(original=source_text, local_path=path, source_type="file")
 
