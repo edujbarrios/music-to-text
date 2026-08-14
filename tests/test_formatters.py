@@ -25,6 +25,16 @@ def test_format_result_as_csv() -> None:
     assert "True,test-model,file,A concise track description." in csv_output
 
 
+def test_format_result_as_json_preserves_unicode() -> None:
+    result = _analysis_result()
+    result.generated_text.short_description = "Énergique — prêt pour l'été"
+
+    json_output = format_result(result, output_format="json")
+
+    assert "Énergique — prêt pour l'été" in json_output
+    assert "\\u00c9" not in json_output
+
+
 def _analysis_result() -> AnalysisResult:
     return AnalysisResult(
         source_path="song.wav",

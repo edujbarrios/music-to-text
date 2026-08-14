@@ -20,7 +20,7 @@ def format_result(
     if output_format == "json":
         indent = 2 if pretty else None
         payload = [item.model_dump(mode="json") for item in result] if isinstance(result, list) else result.model_dump(mode="json")
-        return json.dumps(payload, indent=indent)
+        return json.dumps(payload, indent=indent, ensure_ascii=False)
     if output_format == "markdown":
         return _format_markdown_many(result) if isinstance(result, list) else _format_markdown(result)
     if output_format == "csv":
