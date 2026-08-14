@@ -58,8 +58,20 @@ class OpenAICompatibleClient:
             timeout=self.timeout,
         )
         response.raise_for_status()
-        content = response.json()["choices"][0]["message"]["content"]
+        content = _response_content(response.json())
         return _parse_json_content(content)
+
+
+def _response_content(payload: object) -> str:
+    """Extract message content from a chat-completions response."""
+
+    try:
+        content = payload["choices"][0]["message"]["content"]  # type: ignore[index]
+    except (KeyError, IndexError, TypeError) as exc:
+        raise ValueError("LLM response is missing choices[0].message.content.") from exc
+    if not isinstance(content, str):
+        raise ValueError("LLM response choices[0].message.content must be text.")
+    return content
 
 
 def _parse_json_content(content: str) -> dict[str, Any]:
