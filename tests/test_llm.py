@@ -1,6 +1,6 @@
 import pytest
 
-from music_to_text.llm import _json_object_candidates, _parse_json_content
+from music_to_text.llm import _json_object_candidates, _parse_json_content, _response_content
 
 
 def test_parse_json_content_accepts_raw_json() -> None:
@@ -34,3 +34,22 @@ def test_json_object_candidates_respects_strings() -> None:
 def test_parse_json_content_requires_object() -> None:
     with pytest.raises(ValueError):
         _parse_json_content("[1, 2, 3]")
+
+
+def test_response_content_extracts_chat_completion_text() -> None:
+    payload = {"choices": [{"message": {"content": '{"ok": true}'}}]}
+
+    assert _response_content(payload) == '{"ok": true}'
+
+
+@pytest.mark.parametrize("payload", [{}, {"choices": []}, {"choices": [{"message": {}}]}])
+def test_response_content_rejects_missing_content(payload) -> None:
+    with pytest.raises(ValueError, match="missing"):
+        _response_content(payload)
+
+
+def test_response_content_requires_text() -> None:
+    payload = {"choices": [{"message": {"content": None}}]}
+
+    with pytest.raises(ValueError, match="must be text"):
+        _response_content(payload)
