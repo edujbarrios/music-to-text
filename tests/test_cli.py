@@ -1,7 +1,16 @@
 from typer.testing import CliRunner
 
 from music_to_text import __version__
-from music_to_text.cli import app
+from music_to_text.cli import _write_or_print, app
+
+
+def test_cli_creates_output_parent_directories(monkeypatch, tmp_path) -> None:
+    output = tmp_path / "reports" / "nested" / "analysis.json"
+    monkeypatch.setattr("music_to_text.cli.format_result", lambda *args, **kwargs: "result")
+
+    _write_or_print(object(), mode="summary", output=output, pretty=False, output_format="text")
+
+    assert output.read_text(encoding="utf-8") == "result"
 
 
 def test_cli_version_option() -> None:

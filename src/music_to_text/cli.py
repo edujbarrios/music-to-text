@@ -123,6 +123,7 @@ def _write_or_print(
     text = format_result(result, output_format=resolved_format, pretty=pretty or mode == "json")
 
     if output:
+        output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(text, encoding="utf-8")
         console.print(f"Wrote analysis to {output}")
         return
